@@ -6,6 +6,29 @@
 @use 'variables' as *;
 @use 'mixins' as *;
 
+:root {
+  --color-primary: #{$color-primary};
+  --color-primary-dark: #{$color-primary-dark};
+  --color-primary-rgb: #{$color-primary-rgb};
+  --color-muted: #{$color-muted};
+  --color-muted-light: #{$color-muted-light};
+  --color-muted-dark: #{$color-muted-dark};
+  --color-muted-rgb: #{$color-muted-rgb};
+  --color-text: #{$color-text};
+  --color-text-light: #{$color-text-light};
+  --color-background: #{$color-background};
+  --color-background-alt: #{$color-background-alt};
+  --color-surface: #{$color-surface};
+  --color-white: #{$color-white};
+  --color-black: #{$color-black};
+  --color-ink: #{$color-ink};
+  --color-border: #{$color-border};
+  --color-border-strong: #{$color-border-strong};
+  --font-family-base: #{$font-family-base};
+  --font-family-heading: #{$font-family-heading};
+  --header-height: 80px;
+}
+
 // --- Reset moderne & Box-sizing ---
 *,
 *::before,

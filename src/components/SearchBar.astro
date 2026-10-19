@@ -2,30 +2,30 @@
 // Composant de recherche interactive d'œuvres avec suggestions en temps réel (Angles vifs, esprit galerie d'art)
 ---
 
-<div class="search-bar-widget" id="search-widget">
-  <div class="search-input-box">
-    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<div class="navbar-search" id="search-widget">
+  <input
+    type="text"
+    id="search-input"
+    class="search-input"
+    placeholder="Rechercher une œuvre..."
+    autocomplete="off"
+    spellcheck="false"
+    aria-expanded="false"
+    aria-controls="search-dropdown"
+  />
+
+  <button type="button" id="search-clear-btn" class="search-clear-btn" aria-label="Effacer" style="display: none;">
+    ✕
+  </button>
+
+  <span class="search-shortcut-hint" title="Raccourci clavier ⌘K">⌘K</span>
+
+  <button type="button" class="search-button" id="search-submit-btn" aria-label="Rechercher une œuvre...">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="11" cy="11" r="8"></circle>
       <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
     </svg>
-
-    <input
-      type="text"
-      id="search-input"
-      class="search-field"
-      placeholder="Rechercher une œuvre... (ex: Mikado)"
-      autocomplete="off"
-      spellcheck="false"
-      aria-expanded="false"
-      aria-controls="search-dropdown"
-    />
-
-    <button type="button" id="search-clear-btn" class="search-clear-btn" aria-label="Effacer" style="display: none;">
-      ✕
-    </button>
-
-    <span class="search-shortcut-hint" title="Raccourci clavier">⌘K</span>
-  </div>
+  </button>
 
   <!-- Menu déroulant des résultats de recherche (Cadre architectural 90°) -->
   <div id="search-dropdown" class="search-dropdown" aria-hidden="true">
@@ -302,92 +302,103 @@
   @use '../styles/variables' as *;
   @use '../styles/mixins' as *;
 
-  .search-bar-widget {
-    position: relative;
-    width: 100%;
-    max-width: 380px;
-  }
-
-  .search-input-box {
-    position: relative;
-    display: flex;
-    align-items: center;
-    background-color: $color-background;
-    border: 1px solid $color-border;
+  .navbar-search {
+    align-items: stretch;
+    background: $color-white;
+    border: 1px solid rgba(153, 153, 153, 0.3);
     border-radius: 0;
-    padding: 0.4rem 0.75rem 0.4rem 0.85rem;
-    transition: all $transition-normal;
+    display: flex;
+    max-width: 400px;
+    min-width: 200px;
+    width: 100%;
+    position: relative;
+    overflow: visible;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
     &:focus-within {
-      background-color: $color-white;
       border-color: $color-primary;
+      box-shadow: 0 0 0 1px rgba(204, 0, 0, 0.15);
     }
-  }
 
-  .search-icon {
-    color: $color-muted;
-    flex-shrink: 0;
-    margin-right: 0.5rem;
-  }
+    .search-input {
+      border: none;
+      color: $color-text;
+      flex: 1 1 auto;
+      font-size: 0.9rem;
+      height: 38px;
+      padding: 0 0.75rem;
+      outline: none;
+      background: transparent;
+      font-family: $font-family-base;
 
-  .search-field {
-    flex: 1;
-    border: none;
-    border-radius: 0;
-    outline: none;
-    background: transparent;
-    font-family: $font-family-base;
-    font-size: 0.82rem;
-    color: $color-text;
-    width: 100%;
+      &::placeholder {
+        color: $color-muted;
+      }
+    }
 
-    &::placeholder {
+    .search-clear-btn {
+      background: none;
+      border: none;
+      border-radius: 0;
       color: $color-muted;
+      font-size: 0.85rem;
+      cursor: pointer;
+      padding: 0 0.35rem;
+      display: flex;
+      align-items: center;
+
+      &:hover {
+        color: $color-primary;
+      }
     }
-  }
 
-  .search-clear-btn {
-    background: none;
-    border: none;
-    border-radius: 0;
-    color: $color-muted;
-    font-size: 0.85rem;
-    cursor: pointer;
-    padding: 0 0.35rem;
-    display: flex;
-    align-items: center;
+    .search-shortcut-hint {
+      font-family: monospace;
+      font-size: 0.65rem;
+      font-weight: $font-weight-medium;
+      color: $color-muted;
+      align-self: center;
+      padding: 0 0.4rem;
+      user-select: none;
 
-    &:hover {
-      color: $color-primary;
+      @include respond-to('mobile') {
+        display: none;
+      }
     }
-  }
 
-  .search-shortcut-hint {
-    font-family: monospace;
-    font-size: 0.65rem;
-    font-weight: $font-weight-medium;
-    color: $color-muted;
-    background-color: $color-surface;
-    border: 1px solid $color-border;
-    border-radius: 0;
-    padding: 0.1rem 0.35rem;
-    margin-left: 0.35rem;
-    user-select: none;
+    .search-button {
+      align-items: center;
+      background: transparent;
+      border: none;
+      border-left: 1px solid rgba(153, 153, 153, 0.3);
+      border-radius: 0;
+      color: $color-muted;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      transition: color 0.2s ease, background-color 0.2s ease;
+      width: 44px;
+      height: 38px;
+      flex-shrink: 0;
 
-    @include respond-to('mobile') {
-      display: none;
+      &:hover {
+        background-color: rgba(204, 0, 0, 0.05);
+        color: $color-primary;
+      }
     }
   }
 
   // --- Menu Déroulant (Angles vifs, galerie) ---
   .search-dropdown {
     position: absolute;
-    top: calc(100% + 4px);
-    right: 0;
-    width: 440px;
-    max-width: 90vw;
+    top: 100%;
+    left: -1px;
+    right: -1px;
+    width: calc(100% + 2px);
+    min-width: 380px;
     background-color: $color-white;
     border: 1px solid $color-border-strong;
+    border-top: none;
     border-radius: 0;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     overflow: hidden;

@@ -12,13 +12,14 @@ interface Props {
 const {
   title = "Patrick Laumond — Vitrine Métahisme",
   description = "Vitrine officielle d'exposition des œuvres de Patrick Laumond et du mouvement Métahiste.",
-  currentPath = Astro.url.pathname
+  currentPath = Astro.url.pathname,
 } = Astro.props;
 
 const navItems = [
   { href: '/', label: 'Frise Chronologique' },
   { href: '/interview', label: 'Entretien : Le Grand Mikado' },
   { href: '/partenaires', label: 'Partenaires' },
+  { href: 'https://laumond.com', label: 'laumond.com ↗', external: true },
 ];
 ---
 
@@ -46,10 +47,10 @@ const navItems = [
   </head>
   <body>
     <div class="app-layout">
-      <!-- Navbar inspirée directement de laumond.com (Angles vifs, pureté galerie) -->
-      <header class="navbar">
+      <!-- Navbar identique à laumond.com (Logo 2 lignes gris, Recherche centrale, Liens à droite) -->
+      <header class="navbar" id="app-navbar">
         <div class="navbar-container">
-          <!-- Logo Brand 2 lignes -->
+          <!-- Logo Brand 2 lignes (Couleur et espacements originaux de laumond.com) -->
           <div class="navbar-brand">
             <a href="/" class="brand-link">
               <div class="brand-title">
@@ -59,34 +60,38 @@ const navItems = [
             </a>
           </div>
 
-          <!-- Navigation principale -->
-          <nav class="navbar-nav">
-            {navItems.map((item) => {
-              const isActive = currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href));
-              return (
-                <a
-                  href={item.href}
-                  class={`nav-link ${isActive ? 'nav-link--active' : ''}`}
-                >
-                  {item.label}
-                </a>
-              );
-            })}
+          <!-- Barre de recherche au centre (Exact laumond.com) -->
+          <div class="navbar-search--desktop">
+            <SearchBar />
+          </div>
+
+          <!-- Navigation principale à droite (Exact laumond.com) -->
+          <nav class="navbar-nav" id="main-nav">
+            <ul class="nav-list">
+              {navItems.map((item) => {
+                const isActive = !item.external && (currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href)));
+                return (
+                  <li class="nav-item">
+                    <a
+                      href={item.href}
+                      target={item.external ? '_blank' : undefined}
+                      rel={item.external ? 'noopener noreferrer' : undefined}
+                      class={`nav-link ${isActive ? 'active' : ''}`}
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
           </nav>
 
-          <!-- Barre de recherche interactive & passerelle laumond.com -->
-          <div class="navbar-actions">
-            <SearchBar />
-            <a
-              href="https://laumond.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="site-principal-btn"
-              title="Visiter le site principal laumond.com"
-            >
-              laumond.com ↗
-            </a>
-          </div>
+          <!-- Bouton Menu Mobile (Exact laumond.com) -->
+          <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Ouvrir le menu">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+          </button>
         </div>
       </header>
 
@@ -98,6 +103,7 @@ const navItems = [
       <!-- Footer épuré galerie -->
       <footer class="app-footer">
         <div class="footer-container">
+          <div class="footer-line"></div>
           <div class="footer-brand">
             <span class="footer-name">Patrick Laumond</span>
             <span class="footer-dot">&middot;</span>
@@ -118,6 +124,28 @@ const navItems = [
       <!-- Modale de contemplation & d'analyse d'œuvre HD -->
       <ArtworkModal />
     </div>
+
+    <script>
+      // Menu mobile & effet scrolled navbar
+      document.addEventListener('DOMContentLoaded', () => {
+        const navbar = document.getElementById('app-navbar');
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mainNav = document.getElementById('main-nav');
+
+        mobileBtn?.addEventListener('click', () => {
+          mobileBtn.classList.toggle('active');
+          mainNav?.classList.toggle('navbar-nav-open');
+        });
+
+        window.addEventListener('scroll', () => {
+          if (window.scrollY > 20) {
+            navbar?.classList.add('navbar-scrolled');
+          } else {
+            navbar?.classList.remove('navbar-scrolled');
+          }
+        }, { passive: true });
+      });
+    </script>
   </body>
 </html>
 
@@ -132,129 +160,224 @@ const navItems = [
     background-color: $color-background;
   }
 
-  // --- Navbar ---
+  // --- Navbar Exact laumond.com ---
   .navbar {
-    background-color: rgba(255, 255, 255, 0.98);
-    border-bottom: 1px solid $color-border;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid rgba(153, 153, 153, 0.15);
     position: sticky;
     top: 0;
-    z-index: 100;
-    transition: all $transition-normal;
+    transition: all 0.3s ease;
+    z-index: 1000;
+
+    &.navbar-scrolled {
+      background: rgba(255, 255, 255, 0.98);
+      border-bottom-color: rgba(153, 153, 153, 0.25);
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+    }
   }
 
   .navbar-container {
-    @include content-container;
-    height: 74px;
-    display: flex;
     align-items: center;
+    display: flex;
+    font-family: $font-family-base;
+    gap: clamp(1rem, 2vw, 1.5rem);
     justify-content: space-between;
-    gap: $spacing-md;
+    margin: 0;
+    max-width: 100%;
+    min-height: 80px;
+    padding: 1rem 2rem;
+
+    @include respond-to('tablet') {
+      padding: 0.75rem 1.25rem;
+      min-height: 70px;
+    }
   }
 
   .navbar-brand {
+    flex-shrink: 0;
+    white-space: nowrap;
+
     .brand-link {
-      display: inline-block;
+      color: inherit;
+      display: block;
       text-decoration: none;
     }
 
     .brand-title {
-      display: flex;
-      flex-direction: column;
+      color: $color-muted; // #999999 (Couleur originale de laumond.com)
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      font-weight: 400;
       line-height: 1.05;
+      margin: 0;
+      text-transform: uppercase;
+      transition: color 0.2s ease;
 
-      .brand-name-top {
-        font-size: 1.15rem;
-        font-weight: $font-weight-regular;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
+      &:hover {
         color: $color-text;
       }
 
+      .brand-name-top {
+        display: block;
+        letter-spacing: 0.25em;
+      }
+
       .brand-name-bottom {
-        font-size: 1.15rem;
-        font-weight: $font-weight-bold;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: $color-primary;
+        display: block;
+        letter-spacing: 0.2em;
       }
     }
   }
 
-  .navbar-nav {
-    display: flex;
-    align-items: center;
-    gap: clamp(1rem, 2.5vw, 2.2rem);
+  .navbar-search--desktop {
+    flex: 1 1 auto;
+    margin: 0 auto;
+    max-width: 400px;
+    min-width: 220px;
 
     @include respond-to('tablet') {
       display: none;
     }
   }
 
-  .nav-link {
-    font-size: 0.85rem;
-    font-weight: $font-weight-regular;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: $color-text-light;
-    padding: $spacing-xs 0;
-    position: relative;
-    transition: color $transition-fast;
+  .navbar-nav {
+    align-items: center;
+    display: flex;
+    flex: 0 0 auto;
+    flex-shrink: 0;
+    gap: clamp(0.8rem, 1.8vw, 2.2rem);
+    justify-content: flex-end;
+    min-width: 0;
 
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background-color: $color-primary;
-      border-radius: 0;
-      transition: width $transition-normal;
-    }
+    .nav-list {
+      align-items: center;
+      display: flex;
+      flex-wrap: nowrap;
+      gap: clamp(0.6rem, 1.5vw, 1.8rem);
+      list-style: none;
+      margin: 0;
+      min-width: 0;
+      padding: 0;
+      white-space: nowrap;
 
-    &:hover {
-      color: $color-text;
+      .nav-item {
+        .nav-link {
+          color: $color-muted; // #999999
+          font-size: clamp(0.72rem, 1.4vw, 0.88rem);
+          font-weight: 500;
+          letter-spacing: clamp(0.04em, 0.18vw, 0.08em);
+          padding: 0.5rem 0;
+          position: relative;
+          text-decoration: none;
+          text-transform: uppercase;
+          transition: all 0.3s ease;
 
-      &::after {
-        width: 100%;
+          &::after {
+            background: $color-primary; // #cc0000
+            bottom: -2px;
+            content: '';
+            height: 2px;
+            left: 0;
+            position: absolute;
+            transition: width 0.3s ease;
+            width: 0;
+            border-radius: 0;
+          }
+
+          &.active,
+          &:hover {
+            color: $color-primary;
+
+            &::after {
+              width: 100%;
+            }
+          }
+        }
       }
     }
 
-    &--active {
-      color: $color-text;
-      font-weight: $font-weight-medium;
+    @include respond-to('tablet') {
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.98);
+      border-bottom: 1px solid rgba(153, 153, 153, 0.15);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      flex-direction: column;
+      gap: 1.5rem;
+      left: 0;
+      opacity: 0;
+      padding: 2rem 1.5rem;
+      position: fixed;
+      right: 0;
+      top: 70px;
+      transform: translateY(-100%);
+      transition: all 0.3s ease;
+      visibility: hidden;
 
-      &::after {
+      &.navbar-nav-open {
+        opacity: 1;
+        transform: translateY(0);
+        visibility: visible;
+      }
+
+      .nav-list {
+        flex-direction: column;
+        gap: 1.25rem;
         width: 100%;
+
+        .nav-item {
+          text-align: center;
+          width: 100%;
+
+          .nav-link {
+            border-bottom: 1px solid rgba(153, 153, 153, 0.1);
+            display: block;
+            font-size: 0.95rem;
+            padding: 0.75rem 0;
+
+            &::after {
+              display: none;
+            }
+          }
+        }
       }
     }
   }
 
-  .navbar-actions {
-    display: flex;
-    align-items: center;
-    gap: $spacing-md;
+  .mobile-menu-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: none;
+    flex-direction: column;
+    height: 26px;
+    justify-content: space-around;
+    margin-left: auto;
+    padding: 0;
+    width: 28px;
 
-    .site-principal-btn {
-      font-size: 0.78rem;
-      font-weight: $font-weight-regular;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: $color-primary;
-      border: 1px solid rgba(204, 0, 0, 0.4);
-      border-radius: 0;
-      padding: 0.45rem 1rem;
-      transition: all $transition-fast;
-      white-space: nowrap;
+    @include respond-to('tablet') {
+      display: flex;
+    }
 
-      @include respond-to('mobile') {
-        display: none;
+    .hamburger-line {
+      background: $color-muted;
+      height: 2px;
+      transform-origin: 1px;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    &.active {
+      .hamburger-line:first-child {
+        transform: rotate(45deg);
       }
-
-      &:hover {
-        background-color: $color-primary;
-        color: $color-white;
-        border-color: $color-primary;
+      .hamburger-line:nth-child(2) {
+        opacity: 0;
+      }
+      .hamburger-line:nth-child(3) {
+        transform: rotate(-45deg);
       }
     }
   }
@@ -265,21 +388,29 @@ const navItems = [
     width: 100%;
   }
 
-  // --- Footer ---
+  // --- Footer Exact laumond.com ---
   .app-footer {
-    background-color: $color-background;
+    background-color: $color-surface;
     border-top: 1px solid $color-border;
-    padding: $spacing-2xl 0;
+    padding: 30px 0;
     margin-top: auto;
   }
 
   .footer-container {
     @include content-container;
+    max-width: 960px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: $spacing-md;
     text-align: center;
+  }
+
+  .footer-line {
+    background: $color-ink;
+    height: 1px;
+    margin: 0 auto;
+    width: 100px;
   }
 
   .footer-brand {
@@ -292,7 +423,7 @@ const navItems = [
     justify-content: center;
 
     .footer-name {
-      font-weight: $font-weight-semibold;
+      font-weight: $font-weight-medium;
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
