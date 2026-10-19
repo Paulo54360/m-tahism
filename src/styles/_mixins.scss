@@ -63,7 +63,7 @@
   }
 
   .section-divider {
-    background-color: $color-primary-dark;
+    background-color: var(--accent-divider, #{$color-primary-dark});
     height: 3px;
     margin: 0;
     width: calc(100% - 0.22em);

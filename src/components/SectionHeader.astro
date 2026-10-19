@@ -3,13 +3,14 @@ interface Props {
   tag?: 'h1' | 'h2' | 'h3';
   labelId?: string;
   animated?: boolean;
+  accent?: 'primary' | 'green';
 }
 
-const { tag = 'h2', labelId, animated = true } = Astro.props;
+const { tag = 'h2', labelId, animated = true, accent = 'primary' } = Astro.props;
 const TitleTag = tag;
 ---
 
-<div class={`section-header ${animated ? 'section-header--animated' : ''}`}>
+<div class={`section-header ${animated ? 'section-header--animated' : ''} ${accent === 'green' ? 'section-header--green' : ''}`}>
   {labelId && <span class="artist-tag">{labelId}</span>}
   <TitleTag class="section-title">
     <slot />
@@ -26,6 +27,12 @@ const TitleTag = tag;
 
     .artist-tag {
       margin-bottom: 0.2rem;
+    }
+
+    &--green {
+      .section-divider {
+        background-color: $color-green-symbol;
+      }
     }
   }
 </style>

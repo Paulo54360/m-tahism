@@ -163,7 +163,7 @@ const effectiveS3Key = s3Key || matchedArtwork?.s3Key || '';
 
     &:hover,
     &:focus-visible {
-      border-color: $color-primary;
+      border-color: var(--card-hover-border, #{$color-primary});
 
       .card-zoom-badge {
         opacity: 1;
@@ -198,7 +198,7 @@ const effectiveS3Key = s3Key || matchedArtwork?.s3Key || '';
     top: $spacing-md;
     right: $spacing-md;
     background-color: rgba(255, 255, 255, 0.95);
-    color: $color-primary;
+    color: var(--badge-accent-color, #{$color-primary});
     border: 1px solid $color-border;
     border-radius: 0;
     font-size: 0.72rem;
@@ -288,7 +288,7 @@ const effectiveS3Key = s3Key || matchedArtwork?.s3Key || '';
 
     .caption-marker {
       font-weight: $font-weight-semibold;
-      color: $color-primary;
+      color: var(--badge-accent-color, #{$color-primary});
     }
   }
 </style>
