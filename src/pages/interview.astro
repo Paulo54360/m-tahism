@@ -1,0 +1,407 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import ImagePlaceholder from '../components/ImagePlaceholder.astro';
+
+const interviewQuestions = [
+  {
+    qId: "Question.2.1",
+    question: "Patrick Laumond, d'où est née l'impulsion originelle du « Grand Mikado de la pensée humaine » ?",
+    rId: "Reponse.2.1",
+    textId: "Texte.2.2",
+    answer: "Texte.2.2 — L'impulsion est née d'un vertige face à l'hyper-connexion contemporaine. En observant la simultanéité des idées, des croyances et des algorithmes qui traversent notre époque, j'ai visualisé notre conscience collective comme un jeu de mikado géant, jeté dans l'espace. Des milliers de trajectoires colorées, apparemment chaotiques, mais régies par un ordre géométrique et vibratoire subtil. Chaque baguette posée soutient ou met en tension toutes les autres.",
+    mediaId: "Image.2.2",
+    s3Key: "artworks/vecteurs-de-conscience-diptyque-hd.webp",
+    mediaCaption: "Image.2.2 — Vue d'ensemble du réseau de lignes et des tensions spatiales de l'œuvre.",
+  },
+  {
+    qId: "Question.2.2",
+    question: "Pourquoi avoir choisi la métaphore du Mikado pour symboliser la pensée et le Métahisme ?",
+    rId: "Reponse.2.2",
+    textId: "Texte.2.3",
+    answer: "Texte.2.3 — Le jeu du mikado porte en lui une loi fondamentale : la solidarité absolue de tous les éléments. Si vous tentez d'extraire une pensée, un préjugé ou une mémoire sans précaution, c'est l'ensemble de l'édifice qui s'ébranle. Dans le Métahisme, nous affirmons que la matière et l'esprit ne sont pas des entités isolées mais des lignes d'interférence. Peindre le Grand Mikado, c'est figer l'instant précis où l'équilibre oscille entre stabilité sereine et effondrement fécond.",
+    mediaId: null,
+    s3Key: null,
+  },
+  {
+    qId: "Question.2.3",
+    question: "Comment le Métahisme se traduit-il techniquement dans la matière et la superposition des couleurs ?",
+    rId: "Reponse.2.3",
+    textId: "Texte.2.4",
+    answer: "Texte.2.4 — Chaque ligne est peinte à la main avec une rigueur calligraphique, en alternant pigments denses, laques transparentes et empâtements minéraux. Certaines baguettes semblent flotter en avant-plan grâce à des ombres portées optiques, tandis que d'autres s'enfoncent dans des profondeurs abyssales. C'est une œuvre qui refuse la bi-dimensionnalité : elle respire et se recompose selon l'angle d'incidence de la lumière et la distance de contemplation.",
+    mediaId: "Image.2.3",
+    s3Key: "artworks/labyrinthe-synaptique-hd.webp",
+    mediaCaption: "Image.2.3 — Macro-photographie haute définition révélant la texture pigmentaire et les glacis superposés.",
+  },
+  {
+    qId: "Question.2.4",
+    question: "Quelle expérience souhaitez-vous faire vivre au spectateur face à cette œuvre monumentale ?",
+    rId: "Reponse.2.4",
+    textId: "Texte.2.5",
+    answer: "Texte.2.5 — Je souhaite qu'il s'arrête et cesse de vouloir tout comprendre intellectuellement. Le Grand Mikado est un accélérateur de méditation. Au premier regard, on voit la dispersion ; au second regard, l'harmonie des axes se révèle. Le spectateur devient le joueur silencieux qui, par son regard, fait tenir l'échafaudage de la pensée humaine.",
+    mediaId: null,
+    s3Key: null,
+  },
+];
+---
+
+<Layout title="Entretien Exclusif : Le Grand Mikado — Patrick Laumond" currentPath="/interview">
+  <div class="interview-page">
+    <!-- EN-TÊTE ÉDITORIAL DE L'ENTRETIEN -->
+    <header class="interview-hero">
+      <div class="main-container">
+        <div class="hero-top-badge">
+          <span class="category-name">Entretien d'Atelier & Exposition</span>
+        </div>
+
+        <div class="tag-row">
+          <span class="artist-tag">Titre.2.1</span>
+        </div>
+        <h1 class="interview-headline">
+          « Le Grand Mikado de la pensée humaine »
+          <span class="headline-sub">Rencontre au cœur du Métahisme avec Patrick Laumond</span>
+        </h1>
+
+        <div class="editorial-lead-container">
+          <div class="tag-row">
+            <span class="artist-tag">Texte.2.1</span>
+          </div>
+          <p class="editorial-lead">
+            Texte.2.1 — Dans cet entretien exclusif réalisé à l'occasion de l'exposition numérique, Patrick Laumond dévoile la genèse, la symbolique et la démarche philosophique de son chef-d'œuvre monumental. Une traversée intime dans les méandres d'une pensée où la couleur devient vecteur de conscience.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- PORTRAIT / VISUEL D'INTRODUCTION DE L'ARTISTE -->
+    <section class="artist-visual-section">
+      <div class="main-container">
+        <div class="visual-wrapper">
+          <div class="tag-row">
+            <span class="artist-tag">Image.2.1</span>
+          </div>
+          <ImagePlaceholder
+            id="Image.2.1"
+            s3Key="artworks/patrick-laumond-atelier-hd.webp"
+            aspectRatio="16 / 9"
+            altText="Image.2.1 — Patrick Laumond devant Le Grand Mikado dans l'atelier"
+            caption="Image.2.1 — Patrick Laumond dans son atelier de création face à la structure monumentale du Grand Mikado."
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- CORPS DE L'INTERVIEW (QUESTIONS / RÉPONSES) -->
+    <section class="interview-body-section">
+      <div class="main-container interview-container">
+        <div class="interview-flow">
+          {interviewQuestions.map((item, index) => (
+            <article class="interview-block">
+              <!-- Encart Question -->
+              <div class="qa-item question-box">
+                <div class="qa-header">
+                  <span class="qa-speaker interviewer-label">La Rédaction</span>
+                  <span class="artist-tag">{item.qId}</span>
+                </div>
+                <h3 class="question-text">{item.question}</h3>
+              </div>
+
+              <!-- Encart Réponse de Patrick Laumond -->
+              <div class="qa-item answer-box">
+                <div class="qa-header">
+                  <span class="qa-speaker artist-label">Patrick Laumond</span>
+                  <div class="tag-group">
+                    <span class="artist-tag">{item.rId}</span>
+                    <span class="artist-tag">{item.textId}</span>
+                  </div>
+                </div>
+                <div class="answer-content">
+                  <p class="answer-text">{item.answer}</p>
+                </div>
+              </div>
+
+              <!-- Image d'illustration si disponible -->
+              {item.mediaId && (
+                <div class="qa-media-wrapper">
+                  <div class="tag-row">
+                    <span class="artist-tag">{item.mediaId}</span>
+                  </div>
+                  <ImagePlaceholder
+                    id={item.mediaId}
+                    s3Key={item.s3Key || ''}
+                    aspectRatio="16 / 9"
+                    altText={item.mediaId}
+                    caption={item.mediaCaption}
+                  />
+                </div>
+              )}
+            </article>
+          ))}
+        </div>
+
+        <!-- Citation maîtresse en exergue -->
+        <aside class="quote-highlight-card">
+          <div class="quote-decor">“</div>
+          <div class="tag-row">
+            <span class="artist-tag">Titre.2.2</span>
+          </div>
+          <h2 class="quote-title">Aphorisme du Métahisme</h2>
+
+          <div class="tag-row">
+            <span class="artist-tag">Texte.2.6</span>
+          </div>
+          <blockquote class="quote-body">
+            Texte.2.6 — « Chaque pensée déplacée dans le Mikado fait vaciller l'architecture invisible du monde. Peindre n'est pas représenter : c'est préserver le point d'équilibre. »
+          </blockquote>
+          <cite class="quote-author">— Patrick Laumond</cite>
+
+          <div class="quote-image-box">
+            <div class="tag-row">
+              <span class="artist-tag">Image.2.4</span>
+            </div>
+            <ImagePlaceholder
+              id="Image.2.4"
+              s3Key="artworks/le-grand-mikado-sceau-hd.webp"
+              aspectRatio="21 / 9"
+              altText="Image.2.4 — Détail de signature et cartouche artistique"
+              caption="Image.2.4 — Sceau métahiste apposé sur la toile du Grand Mikado."
+            />
+          </div>
+        </aside>
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<style lang="scss">
+  @use '../styles/variables' as *;
+  @use '../styles/mixins' as *;
+
+  .interview-page {
+    background-color: $color-background;
+    padding-bottom: clamp(4rem, 8vw, 7rem);
+  }
+
+  .tag-row {
+    margin-bottom: 0.35rem;
+  }
+
+  .tag-group {
+    display: inline-flex;
+    gap: $spacing-xs;
+    flex-wrap: wrap;
+  }
+
+  // --- Hero Éditorial ---
+  .interview-hero {
+    padding-top: clamp(2.5rem, 6vw, 4.5rem);
+    padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+    background-color: $color-background;
+  }
+
+  .hero-top-badge {
+    margin-bottom: $spacing-md;
+
+    .category-name {
+      font-size: 0.78rem;
+      font-weight: $font-weight-semibold;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: $color-primary;
+    }
+  }
+
+  .interview-headline {
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-weight: $font-weight-light;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: $color-text;
+    line-height: 1.2;
+    margin-bottom: $spacing-lg;
+
+    .headline-sub {
+      display: block;
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      font-weight: $font-weight-regular;
+      letter-spacing: 0.05em;
+      color: $color-text-light;
+      margin-top: $spacing-sm;
+      text-transform: none;
+    }
+  }
+
+  .editorial-lead-container {
+    max-width: 860px;
+    margin-top: $spacing-md;
+    border-left: 3px solid $color-primary;
+    padding-left: clamp(1rem, 3vw, 1.8rem);
+  }
+
+  .editorial-lead {
+    font-size: clamp(1rem, 1.6vw, 1.15rem);
+    line-height: 1.8;
+    color: $color-text;
+    margin: 0;
+  }
+
+  // --- Visuel de tête ---
+  .artist-visual-section {
+    padding-bottom: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .visual-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  // --- Corps d'interview ---
+  .interview-body-section {
+    padding-top: $spacing-xl;
+  }
+
+  .interview-container {
+    max-width: 950px;
+  }
+
+  .interview-flow {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .interview-block {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+    padding-bottom: clamp(2rem, 4vw, 3.5rem);
+    border-bottom: 1px solid $color-border-light;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .qa-item {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+
+  .qa-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-md;
+    flex-wrap: wrap;
+    margin-bottom: 0.2rem;
+  }
+
+  .qa-speaker {
+    font-size: 0.78rem;
+    font-weight: $font-weight-semibold;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+
+    &.interviewer-label {
+      color: $color-muted-dark;
+    }
+
+    &.artist-label {
+      color: $color-primary;
+    }
+  }
+
+  // Question style
+  .question-box {
+    background-color: $color-background-alt;
+    border-left: 3px solid $color-muted-dark;
+    border-radius: 0;
+    padding: $spacing-md $spacing-lg;
+
+    .question-text {
+      font-size: clamp(1.05rem, 1.8vw, 1.28rem);
+      font-weight: $font-weight-medium;
+      color: $color-text;
+      line-height: 1.45;
+      margin: 0;
+    }
+  }
+
+  // Réponse style
+  .answer-box {
+    background-color: $color-white;
+    border-left: 3px solid $color-primary;
+    border-radius: 0;
+    padding: $spacing-lg $spacing-xl;
+    box-shadow: none;
+
+    .answer-text {
+      font-size: 1.02rem;
+      color: $color-text;
+      line-height: 1.75;
+      margin: 0;
+    }
+  }
+
+  .qa-media-wrapper {
+    margin-top: $spacing-md;
+    width: 100%;
+  }
+
+  // --- Quote Highlight Card ---
+  .quote-highlight-card {
+    position: relative;
+    background-color: $color-background-alt;
+    border: 1px solid $color-border;
+    border-top: 3px solid $color-primary;
+    border-radius: 0;
+    padding: clamp(2rem, 5vw, 3.5rem);
+    margin-top: clamp(3rem, 6vw, 5rem);
+    box-shadow: none;
+    overflow: hidden;
+
+    .quote-decor {
+      position: absolute;
+      top: -15px;
+      right: 20px;
+      font-family: serif;
+      font-size: 8rem;
+      color: rgba(204, 0, 0, 0.06);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .quote-title {
+      font-size: 0.82rem;
+      font-weight: $font-weight-semibold;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: $color-primary;
+      margin-bottom: $spacing-md;
+    }
+
+    .quote-body {
+      font-size: clamp(1.15rem, 2vw, 1.45rem);
+      font-weight: $font-weight-light;
+      font-style: italic;
+      color: $color-text;
+      line-height: 1.6;
+      margin-bottom: $spacing-md;
+    }
+
+    .quote-author {
+      display: block;
+      font-size: 0.92rem;
+      font-weight: $font-weight-semibold;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: $color-text-light;
+      margin-bottom: $spacing-xl;
+    }
+
+    .quote-image-box {
+      margin-top: $spacing-lg;
+    }
+  }
+</style>

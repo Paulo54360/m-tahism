@@ -1,0 +1,414 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import ImagePlaceholder from '../components/ImagePlaceholder.astro';
+
+const institutionalPartners = [
+  { id: "Partenaire.Image.3.1", name: "Partenaire.Nom.3.1 — Ministère de la Culture & Fonds de Création", role: "Soutien Institutionnel Majeur" },
+  { id: "Partenaire.Image.3.2", name: "Partenaire.Nom.3.2 — Musée d'Art Contemporain & Métahisme", role: "Partenaire de Diffusion Muséale" },
+  { id: "Partenaire.Image.3.3", name: "Partenaire.Nom.3.3 — Biennale Internationale des Arts Visuels", role: "Co-production & Itinérance" },
+];
+
+const galleryPartners = [
+  { id: "Partenaire.Image.3.4", name: "Partenaire.Nom.3.4 — Galerie Horizon Contemporain (Paris - Genève)", role: "Représentation Permanente" },
+  { id: "Partenaire.Image.3.5", name: "Partenaire.Nom.3.5 — Fondation d'Entreprise pour l'Art et la Pensée", role: "Mécénat Principal d'Acquisition" },
+  { id: "Partenaire.Image.3.6", name: "Partenaire.Nom.3.6 — Cercle des Amis de Patrick Laumond", role: "Association des Collectionneurs" },
+];
+
+const techPartners = [
+  { id: "Partenaire.Image.3.7", name: "Partenaire.Nom.3.7 — Infrastructure Cloud & Stockage HD (AWS S3)", role: "Diffusion Numérique Haute Fidélité" },
+  { id: "Partenaire.Image.3.8", name: "Partenaire.Nom.3.8 — Studio GigaPixel Numérisation d'Art", role: "Captation Haute Résolution" },
+  { id: "Partenaire.Image.3.9", name: "Partenaire.Nom.3.9 — Laboratoire d'Optique & Pigments Innovants", role: "Recherche Chromatique" },
+];
+---
+
+<Layout title="Remerciements & Partenaires — Patrick Laumond" currentPath="/partenaires">
+  <div class="partners-page">
+    <!-- EN-TÊTE DE LA PAGE PARTENAIRES -->
+    <header class="partners-hero">
+      <div class="main-container">
+        <div class="hero-top-badge">
+          <span class="category-name">Soutiens & Mécénat Culturel</span>
+        </div>
+
+        <div class="tag-row">
+          <span class="artist-tag">Titre.3.1</span>
+        </div>
+        <h1 class="partners-main-title">
+          Remerciements aux Partenaires
+          <span class="headline-sub">Les institutions, mécènes et galeries qui soutiennent l'œuvre</span>
+        </h1>
+
+        <div class="tag-row">
+          <span class="artist-tag">Texte.3.1</span>
+        </div>
+        <p class="partners-lead-text">
+          Texte.3.1 — La réalisation monumentale du « Grand Mikado de la pensée humaine » et le rayonnement international du mouvement Métahiste ne sauraient exister sans l'engagement indéfectible de nos partenaires. Nous tenons à exprimer notre sincère gratitude aux institutions muséales, mécènes privés et pionniers technologiques qui rendent cette exposition possible.
+        </p>
+
+        <div class="hero-media-wrapper">
+          <div class="tag-row">
+            <span class="artist-tag">Image.3.1</span>
+          </div>
+          <ImagePlaceholder
+            id="Image.3.1"
+            aspectRatio="21 / 9"
+            altText="Image.3.1 — Soirée inaugurale de vernissage réunissant les partenaires"
+            caption="Image.3.1 — Moment d'échange lors de la présentation privée du Grand Mikado aux partenaires fondateurs."
+          />
+        </div>
+      </div>
+    </header>
+
+    <!-- SECTION 1 : PARTENAIRES INSTITUTIONNELS -->
+    <section class="partner-group-section">
+      <div class="main-container">
+        <SectionHeader tag="h2" labelId="Titre.3.2">
+          Institutions & Soutiens Publics
+        </SectionHeader>
+
+        <div class="tag-row">
+          <span class="artist-tag">Texte.3.2</span>
+        </div>
+        <p class="section-description">
+          Texte.3.2 — Remerciements aux ministères, directions culturelles régionales et musées nationaux qui accueillent et favorisent la mise en valeur des toiles du Métahisme à travers leurs programmes d'expositions publiques.
+        </p>
+
+        <div class="partners-grid">
+          {institutionalPartners.map((partner) => (
+            <div class="partner-card">
+              <div class="partner-card-media">
+                <div class="tag-row">
+                  <span class="artist-tag">{partner.id}</span>
+                </div>
+                <div class="partner-logo-frame">
+                  <div class="logo-symbol">🏛</div>
+                  <span class="logo-placeholder-id">{partner.id}</span>
+                </div>
+              </div>
+              <div class="partner-card-info">
+                <h4 class="partner-name">{partner.name}</h4>
+                <p class="partner-role">{partner.role}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2 : GALERIES & MÉCÉNAT PRIVÉ -->
+    <section class="partner-group-section partner-group-section--alt">
+      <div class="main-container">
+        <SectionHeader tag="h2" labelId="Titre.3.3">
+          Galeries Associées & Mécènes
+        </SectionHeader>
+
+        <div class="tag-row">
+          <span class="artist-tag">Texte.3.3</span>
+        </div>
+        <p class="section-description">
+          Texte.3.3 — Gratitude particulière aux collectionneurs donateurs et aux galeries d'art contemporain pour la mise à disposition des œuvres maîtresses et leur soutien constant à la cote artistique de Patrick Laumond.
+        </p>
+
+        <div class="partners-grid">
+          {galleryPartners.map((partner) => (
+            <div class="partner-card">
+              <div class="partner-card-media">
+                <div class="tag-row">
+                  <span class="artist-tag">{partner.id}</span>
+                </div>
+                <div class="partner-logo-frame">
+                  <div class="logo-symbol">🎨</div>
+                  <span class="logo-placeholder-id">{partner.id}</span>
+                </div>
+              </div>
+              <div class="partner-card-info">
+                <h4 class="partner-name">{partner.name}</h4>
+                <p class="partner-role">{partner.role}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3 : PARTENAIRES TECHNOLOGIQUES & CLOUD -->
+    <section class="partner-group-section">
+      <div class="main-container">
+        <SectionHeader tag="h2" labelId="Titre.3.4">
+          Ingénierie & Partenaires Technologiques
+        </SectionHeader>
+
+        <div class="tag-row">
+          <span class="artist-tag">Texte.3.4</span>
+        </div>
+        <p class="section-description">
+          Texte.3.4 — Remerciements aux équipes techniques pour le déploiement de la solution de distribution média haute performance AWS S3, la numérisation gigapixel et l'architecture web dédiée à cette vitrine d'exposition.
+        </p>
+
+        <div class="partners-grid">
+          {techPartners.map((partner) => (
+            <div class="partner-card">
+              <div class="partner-card-media">
+                <div class="tag-row">
+                  <span class="artist-tag">{partner.id}</span>
+                </div>
+                <div class="partner-logo-frame">
+                  <div class="logo-symbol">⚡</div>
+                  <span class="logo-placeholder-id">{partner.id}</span>
+                </div>
+              </div>
+              <div class="partner-card-info">
+                <h4 class="partner-name">{partner.name}</h4>
+                <p class="partner-role">{partner.role}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4 : CONTACT MÉCÉNAT & COLLABORATION -->
+    <section class="partners-contact-section">
+      <div class="main-container">
+        <div class="contact-cta-card">
+          <div class="tag-row">
+            <span class="artist-tag">Titre.3.5</span>
+          </div>
+          <h2 class="contact-card-title">Rejoindre l'Aventure Métahiste</h2>
+
+          <div class="tag-row">
+            <span class="artist-tag">Texte.3.5</span>
+          </div>
+          <p class="contact-card-text">
+            Texte.3.5 — Vous êtes une institution, un conservateur ou un collectionneur passionné et souhaitez soutenir la prochaine étape d'exposition du Grand Mikado ? Contactez la délégation artistique de Patrick Laumond.
+          </p>
+
+          <div class="contact-actions">
+            <a href="https://laumond.com" target="_blank" rel="noopener noreferrer" class="btn-partner-contact">
+              Prendre Contact via laumond.com
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<style lang="scss">
+  @use '../styles/variables' as *;
+  @use '../styles/mixins' as *;
+
+  .partners-page {
+    background-color: $color-background;
+  }
+
+  .tag-row {
+    margin-bottom: 0.35rem;
+  }
+
+  // --- Hero Section ---
+  .partners-hero {
+    padding-top: clamp(2.5rem, 6vw, 4.5rem);
+    padding-bottom: clamp(3rem, 6vw, 5rem);
+    border-bottom: 1px solid $color-border-light;
+  }
+
+  .hero-top-badge {
+    margin-bottom: $spacing-md;
+
+    .category-name {
+      font-size: 0.78rem;
+      font-weight: $font-weight-semibold;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: $color-primary;
+    }
+  }
+
+  .partners-main-title {
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-weight: $font-weight-light;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: $color-text;
+    line-height: 1.2;
+    margin-bottom: $spacing-lg;
+
+    .headline-sub {
+      display: block;
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      font-weight: $font-weight-regular;
+      letter-spacing: 0.05em;
+      color: $color-text-light;
+      margin-top: $spacing-sm;
+      text-transform: none;
+    }
+  }
+
+  .partners-lead-text {
+    font-size: clamp(1rem, 1.5vw, 1.12rem);
+    line-height: 1.75;
+    color: $color-text;
+    max-width: 950px;
+    margin-bottom: $spacing-2xl;
+  }
+
+  .hero-media-wrapper {
+    width: 100%;
+    margin-top: $spacing-xl;
+  }
+
+  // --- Group Sections ---
+  .partner-group-section {
+    @include section-padding;
+    background-color: $color-background;
+
+    &--alt {
+      background-color: $color-background-alt;
+    }
+  }
+
+  .section-description {
+    font-size: 0.98rem;
+    color: $color-text;
+    line-height: 1.65;
+    max-width: 850px;
+    margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .partners-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .partner-card {
+    background-color: $color-white;
+    border: 1px solid $color-border;
+    border-radius: 0;
+    padding: $spacing-xl;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: border-color $transition-fast;
+
+    &:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: $color-primary;
+
+      .logo-symbol {
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  .partner-card-media {
+    margin-bottom: $spacing-lg;
+  }
+
+  .partner-logo-frame {
+    height: 110px;
+    background-color: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+
+    .logo-symbol {
+      font-size: 2rem;
+      transition: transform $transition-fast;
+    }
+
+    .logo-placeholder-id {
+      font-family: monospace;
+      font-size: 0.72rem;
+      color: $color-muted;
+    }
+  }
+
+  .partner-card-info {
+    .partner-name {
+      font-size: 1rem;
+      font-weight: $font-weight-medium;
+      color: $color-text;
+      line-height: 1.35;
+      margin-bottom: $spacing-xs;
+    }
+
+    .partner-role {
+      font-size: 0.82rem;
+      color: $color-primary;
+      font-weight: $font-weight-medium;
+      letter-spacing: 0.04em;
+      margin: 0;
+    }
+  }
+
+  // --- Contact Card ---
+  .partners-contact-section {
+    @include section-padding;
+    background-color: $color-background-alt;
+    border-top: 1px solid $color-border;
+  }
+
+  .contact-cta-card {
+    background-color: $color-white;
+    border: 1px solid $color-border;
+    border-top: 3px solid $color-primary;
+    border-radius: 0;
+    padding: clamp(2.5rem, 5vw, 4rem);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: none;
+
+    .contact-card-title {
+      font-size: clamp(1.6rem, 3vw, 2.3rem);
+      font-weight: $font-weight-light;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: $color-text;
+      margin-bottom: $spacing-md;
+    }
+
+    .contact-card-text {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: $color-text;
+      max-width: 750px;
+      margin-bottom: $spacing-xl;
+      text-align: center;
+    }
+
+    .btn-partner-contact {
+      display: inline-flex;
+      align-items: center;
+      background-color: $color-primary;
+      color: $color-white;
+      border: 1px solid $color-primary;
+      padding: 0.85rem 2.2rem;
+      border-radius: 0;
+      font-size: 0.85rem;
+      font-weight: $font-weight-regular;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      box-shadow: none;
+      transition: all $transition-fast;
+
+      &:hover {
+        background-color: $color-primary-dark;
+        border-color: $color-primary-dark;
+        color: $color-white;
+        transform: none;
+        box-shadow: none;
+      }
+    }
+  }
+</style>

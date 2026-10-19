@@ -1,0 +1,333 @@
+---
+import '../styles/global.scss';
+import SearchBar from '../components/SearchBar.astro';
+import ArtworkModal from '../components/ArtworkModal.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  currentPath?: string;
+}
+
+const {
+  title = "Patrick Laumond — Vitrine Métahisme",
+  description = "Vitrine officielle d'exposition des œuvres de Patrick Laumond et du mouvement Métahiste.",
+  currentPath = Astro.url.pathname
+} = Astro.props;
+
+const navItems = [
+  { href: '/', label: 'Frise Chronologique' },
+  { href: '/interview', label: 'Entretien : Le Grand Mikado' },
+  { href: '/partenaires', label: 'Partenaires' },
+];
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-layout">
+      <!-- Navbar inspirée directement de laumond.com (Angles vifs, pureté galerie) -->
+      <header class="navbar">
+        <div class="navbar-container">
+          <!-- Logo Brand 2 lignes -->
+          <div class="navbar-brand">
+            <a href="/" class="brand-link">
+              <div class="brand-title">
+                <span class="brand-name-top">Patrick</span>
+                <span class="brand-name-bottom">Laumond</span>
+              </div>
+            </a>
+          </div>
+
+          <!-- Navigation principale -->
+          <nav class="navbar-nav">
+            {navItems.map((item) => {
+              const isActive = currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href));
+              return (
+                <a
+                  href={item.href}
+                  class={`nav-link ${isActive ? 'nav-link--active' : ''}`}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
+          </nav>
+
+          <!-- Barre de recherche interactive & passerelle laumond.com -->
+          <div class="navbar-actions">
+            <SearchBar />
+            <a
+              href="https://laumond.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="site-principal-btn"
+              title="Visiter le site principal laumond.com"
+            >
+              laumond.com ↗
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <!-- Contenu de la page -->
+      <main class="main-content">
+        <slot />
+      </main>
+
+      <!-- Footer épuré galerie -->
+      <footer class="app-footer">
+        <div class="footer-container">
+          <div class="footer-brand">
+            <span class="footer-name">Patrick Laumond</span>
+            <span class="footer-dot">&middot;</span>
+            <span class="footer-theme">Le Grand Mikado de la pensée humaine</span>
+          </div>
+          <div class="footer-links">
+            <a href="/" class="footer-link">Frise</a>
+            <a href="/interview" class="footer-link">Entretien</a>
+            <a href="/partenaires" class="footer-link">Partenaires</a>
+            <a href="https://laumond.com" target="_blank" rel="noopener noreferrer" class="footer-link">laumond.com</a>
+          </div>
+          <div class="footer-copy">
+            &copy; {new Date().getFullYear()} Patrick Laumond. Métahisme. Tous droits réservés.
+          </div>
+        </div>
+      </footer>
+
+      <!-- Modale de contemplation & d'analyse d'œuvre HD -->
+      <ArtworkModal />
+    </div>
+  </body>
+</html>
+
+<style lang="scss">
+  @use '../styles/variables' as *;
+  @use '../styles/mixins' as *;
+
+  .app-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: $color-background;
+  }
+
+  // --- Navbar ---
+  .navbar {
+    background-color: rgba(255, 255, 255, 0.98);
+    border-bottom: 1px solid $color-border;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: all $transition-normal;
+  }
+
+  .navbar-container {
+    @include content-container;
+    height: 74px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-md;
+  }
+
+  .navbar-brand {
+    .brand-link {
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .brand-title {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.05;
+
+      .brand-name-top {
+        font-size: 1.15rem;
+        font-weight: $font-weight-regular;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: $color-text;
+      }
+
+      .brand-name-bottom {
+        font-size: 1.15rem;
+        font-weight: $font-weight-bold;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: $color-primary;
+      }
+    }
+  }
+
+  .navbar-nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2.5vw, 2.2rem);
+
+    @include respond-to('tablet') {
+      display: none;
+    }
+  }
+
+  .nav-link {
+    font-size: 0.85rem;
+    font-weight: $font-weight-regular;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: $color-text-light;
+    padding: $spacing-xs 0;
+    position: relative;
+    transition: color $transition-fast;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: $color-primary;
+      border-radius: 0;
+      transition: width $transition-normal;
+    }
+
+    &:hover {
+      color: $color-text;
+
+      &::after {
+        width: 100%;
+      }
+    }
+
+    &--active {
+      color: $color-text;
+      font-weight: $font-weight-medium;
+
+      &::after {
+        width: 100%;
+      }
+    }
+  }
+
+  .navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+
+    .site-principal-btn {
+      font-size: 0.78rem;
+      font-weight: $font-weight-regular;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: $color-primary;
+      border: 1px solid rgba(204, 0, 0, 0.4);
+      border-radius: 0;
+      padding: 0.45rem 1rem;
+      transition: all $transition-fast;
+      white-space: nowrap;
+
+      @include respond-to('mobile') {
+        display: none;
+      }
+
+      &:hover {
+        background-color: $color-primary;
+        color: $color-white;
+        border-color: $color-primary;
+      }
+    }
+  }
+
+  // --- Main Content ---
+  .main-content {
+    flex: 1;
+    width: 100%;
+  }
+
+  // --- Footer ---
+  .app-footer {
+    background-color: $color-background;
+    border-top: 1px solid $color-border;
+    padding: $spacing-2xl 0;
+    margin-top: auto;
+  }
+
+  .footer-container {
+    @include content-container;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-md;
+    text-align: center;
+  }
+
+  .footer-brand {
+    font-size: 0.88rem;
+    color: $color-text;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .footer-name {
+      font-weight: $font-weight-semibold;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .footer-dot {
+      color: $color-primary;
+    }
+
+    .footer-theme {
+      color: $color-text-light;
+      font-style: italic;
+    }
+  }
+
+  .footer-links {
+    display: flex;
+    gap: $spacing-lg;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .footer-link {
+      font-size: 0.8rem;
+      color: $color-text-muted;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+
+      &:hover {
+        color: $color-primary;
+      }
+    }
+  }
+
+  .footer-copy {
+    font-size: 0.72rem;
+    color: $color-muted;
+    letter-spacing: 0.04em;
+  }
+</style>

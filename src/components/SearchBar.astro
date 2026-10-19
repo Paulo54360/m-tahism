@@ -1,0 +1,579 @@
+---
+// Composant de recherche interactive d'œuvres avec suggestions en temps réel (Angles vifs, esprit galerie d'art)
+---
+
+<div class="search-bar-widget" id="search-widget">
+  <div class="search-input-box">
+    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+
+    <input
+      type="text"
+      id="search-input"
+      class="search-field"
+      placeholder="Rechercher une œuvre... (ex: Mikado)"
+      autocomplete="off"
+      spellcheck="false"
+      aria-expanded="false"
+      aria-controls="search-dropdown"
+    />
+
+    <button type="button" id="search-clear-btn" class="search-clear-btn" aria-label="Effacer" style="display: none;">
+      ✕
+    </button>
+
+    <span class="search-shortcut-hint" title="Raccourci clavier">⌘K</span>
+  </div>
+
+  <!-- Menu déroulant des résultats de recherche (Cadre architectural 90°) -->
+  <div id="search-dropdown" class="search-dropdown" aria-hidden="true">
+    <div class="dropdown-header">
+      <span class="dropdown-title">Catalogue des Œuvres</span>
+      <span class="dropdown-count" id="search-count-badge">0 résultat</span>
+    </div>
+
+    <div id="search-results-list" class="results-list" role="listbox">
+      <!-- Résultats injectés dynamiquement -->
+    </div>
+
+    <!-- État aucun résultat -->
+    <div id="search-empty-state" class="empty-state" style="display: none;">
+      <p class="empty-text">Aucune œuvre trouvée pour cette recherche.</p>
+      <div class="empty-suggestions">
+        <span class="suggest-label">Suggestions :</span>
+        <button type="button" class="suggest-btn" data-query="Mikado">Mikado</button>
+        <button type="button" class="suggest-btn" data-query="Fractales">Fractales</button>
+        <button type="button" class="suggest-btn" data-query="Conscience">Conscience</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import type { Artwork } from '../types/artwork';
+
+  class SearchController {
+    widget: HTMLElement | null = null;
+    input: HTMLInputElement | null = null;
+    clearBtn: HTMLButtonElement | null = null;
+    dropdown: HTMLElement | null = null;
+    resultsList: HTMLElement | null = null;
+    emptyState: HTMLElement | null = null;
+    countBadge: HTMLElement | null = null;
+
+    catalog: Artwork[] = [];
+    currentResults: Artwork[] = [];
+    selectedIndex = -1;
+    debounceTimer: number | null = null;
+
+    constructor() {
+      this.initElements();
+      this.bindEvents();
+      this.preloadCatalog();
+    }
+
+    initElements() {
+      this.widget = document.getElementById('search-widget');
+      this.input = document.getElementById('search-input') as HTMLInputElement;
+      this.clearBtn = document.getElementById('search-clear-btn') as HTMLButtonElement;
+      this.dropdown = document.getElementById('search-dropdown');
+      this.resultsList = document.getElementById('search-results-list');
+      this.emptyState = document.getElementById('search-empty-state');
+      this.countBadge = document.getElementById('search-count-badge');
+    }
+
+    bindEvents() {
+      if (!this.input) return;
+
+      this.input.addEventListener('input', () => {
+        const val = this.input?.value ?? '';
+        if (this.clearBtn) {
+          this.clearBtn.style.display = val.length > 0 ? 'block' : 'none';
+        }
+        this.debounceSearch(val);
+      });
+
+      this.input.addEventListener('focus', () => {
+        this.performSearch(this.input?.value ?? '');
+      });
+
+      this.clearBtn?.addEventListener('click', () => {
+        if (this.input) {
+          this.input.value = '';
+          this.input.focus();
+          if (this.clearBtn) this.clearBtn.style.display = 'none';
+          this.performSearch('');
+        }
+      });
+
+      // Fermeture au clic extérieur
+      document.addEventListener('click', (e) => {
+        if (!this.widget?.contains(e.target as Node)) {
+          this.closeDropdown();
+        }
+      });
+
+      // Raccourcis clavier globaux (Cmd+K / Ctrl+K, Échap, Flèches)
+      window.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          this.input?.focus();
+          this.input?.select();
+        }
+
+        if (e.key === 'Escape' && this.isDropdownOpen()) {
+          this.closeDropdown();
+          this.input?.blur();
+        }
+
+        if (this.isDropdownOpen()) {
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            this.navigateResults(1);
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            this.navigateResults(-1);
+          } else if (e.key === 'Enter') {
+            if (this.selectedIndex >= 0 && this.currentResults[this.selectedIndex]) {
+              e.preventDefault();
+              this.selectArtwork(this.currentResults[this.selectedIndex]);
+            }
+          }
+        }
+      });
+
+      // Clics sur suggestions
+      document.querySelectorAll('.suggest-btn').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          const query = (e.currentTarget as HTMLElement).getAttribute('data-query');
+          if (query && this.input) {
+            this.input.value = query;
+            if (this.clearBtn) this.clearBtn.style.display = 'block';
+            this.performSearch(query);
+          }
+        });
+      });
+    }
+
+    async preloadCatalog() {
+      try {
+        const res = await fetch('/api/artworks.json');
+        if (res.ok) {
+          const data = await res.json();
+          this.catalog = data.results || [];
+        }
+      } catch (err) {
+        console.warn('Préchargement du catalogue :', err);
+      }
+    }
+
+    debounceSearch(query: string) {
+      if (this.debounceTimer) window.clearTimeout(this.debounceTimer);
+      this.debounceTimer = window.setTimeout(() => {
+        this.performSearch(query);
+      }, 150);
+    }
+
+    performSearch(query: string) {
+      const q = query.trim().toLowerCase();
+      this.selectedIndex = -1;
+
+      if (!q) {
+        this.currentResults = this.catalog.slice(0, 5);
+      } else {
+        this.currentResults = this.catalog.filter((art) => {
+          const matchTitle = art.title.toLowerCase().includes(q);
+          const matchTags = art.tags.some((t) => t.toLowerCase().includes(q));
+          const matchDesc = art.description.toLowerCase().includes(q);
+          const matchRef = art.artistRef ? art.artistRef.toLowerCase().includes(q) : false;
+          return matchTitle || matchTags || matchDesc || matchRef;
+        });
+      }
+
+      this.renderDropdown();
+    }
+
+    renderDropdown() {
+      if (!this.dropdown || !this.resultsList || !this.emptyState || !this.countBadge) return;
+
+      this.resultsList.innerHTML = '';
+      const count = this.currentResults.length;
+      this.countBadge.textContent = `${count} ${count > 1 ? 'œuvres' : 'œuvre'}`;
+
+      if (count === 0) {
+        this.resultsList.style.display = 'none';
+        this.emptyState.style.display = 'block';
+      } else {
+        this.resultsList.style.display = 'flex';
+        this.emptyState.style.display = 'none';
+
+        this.currentResults.forEach((art, index) => {
+          const item = document.createElement('div');
+          item.className = 'result-item';
+          item.setAttribute('role', 'option');
+          item.setAttribute('data-index', String(index));
+
+          item.innerHTML = `
+            <div class="result-thumb">
+              <span class="thumb-icon">✦</span>
+            </div>
+            <div class="result-info">
+              <div class="result-header">
+                <span class="result-title">${art.title}</span>
+                <span class="result-year">${art.year}</span>
+              </div>
+              <div class="result-sub">
+                <span class="result-dim">${art.dimensions}</span>
+                ${art.artistRef ? `<span class="artist-tag result-tag">${art.artistRef}</span>` : ''}
+              </div>
+            </div>
+            <div class="result-arrow">→</div>
+          `;
+
+          item.addEventListener('click', () => this.selectArtwork(art));
+          item.addEventListener('mouseenter', () => {
+            this.selectedIndex = index;
+            this.updateSelectionHighlight();
+          });
+
+          this.resultsList?.appendChild(item);
+        });
+      }
+
+      this.openDropdown();
+    }
+
+    navigateResults(direction: number) {
+      if (!this.currentResults.length) return;
+      this.selectedIndex += direction;
+
+      if (this.selectedIndex < 0) {
+        this.selectedIndex = this.currentResults.length - 1;
+      } else if (this.selectedIndex >= this.currentResults.length) {
+        this.selectedIndex = 0;
+      }
+
+      this.updateSelectionHighlight();
+    }
+
+    updateSelectionHighlight() {
+      const items = this.resultsList?.querySelectorAll('.result-item');
+      items?.forEach((el, idx) => {
+        if (idx === this.selectedIndex) {
+          el.classList.add('result-item--selected');
+          el.scrollIntoView({ block: 'nearest' });
+        } else {
+          el.classList.remove('result-item--selected');
+        }
+      });
+    }
+
+    selectArtwork(artwork: Artwork) {
+      this.closeDropdown();
+      window.dispatchEvent(new CustomEvent('open-artwork-modal', { detail: artwork }));
+    }
+
+    isDropdownOpen(): boolean {
+      return this.dropdown?.classList.contains('search-dropdown--open') ?? false;
+    }
+
+    openDropdown() {
+      this.dropdown?.classList.add('search-dropdown--open');
+      this.dropdown?.setAttribute('aria-hidden', 'false');
+      this.input?.setAttribute('aria-expanded', 'true');
+    }
+
+    closeDropdown() {
+      this.dropdown?.classList.remove('search-dropdown--open');
+      this.dropdown?.setAttribute('aria-hidden', 'true');
+      this.input?.setAttribute('aria-expanded', 'false');
+      this.selectedIndex = -1;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    new SearchController();
+  });
+</script>
+
+<style lang="scss">
+  @use '../styles/variables' as *;
+  @use '../styles/mixins' as *;
+
+  .search-bar-widget {
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .search-input-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: $color-background;
+    border: 1px solid $color-border;
+    border-radius: 0;
+    padding: 0.4rem 0.75rem 0.4rem 0.85rem;
+    transition: all $transition-normal;
+
+    &:focus-within {
+      background-color: $color-white;
+      border-color: $color-primary;
+    }
+  }
+
+  .search-icon {
+    color: $color-muted;
+    flex-shrink: 0;
+    margin-right: 0.5rem;
+  }
+
+  .search-field {
+    flex: 1;
+    border: none;
+    border-radius: 0;
+    outline: none;
+    background: transparent;
+    font-family: $font-family-base;
+    font-size: 0.82rem;
+    color: $color-text;
+    width: 100%;
+
+    &::placeholder {
+      color: $color-muted;
+    }
+  }
+
+  .search-clear-btn {
+    background: none;
+    border: none;
+    border-radius: 0;
+    color: $color-muted;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0 0.35rem;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      color: $color-primary;
+    }
+  }
+
+  .search-shortcut-hint {
+    font-family: monospace;
+    font-size: 0.65rem;
+    font-weight: $font-weight-medium;
+    color: $color-muted;
+    background-color: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: 0;
+    padding: 0.1rem 0.35rem;
+    margin-left: 0.35rem;
+    user-select: none;
+
+    @include respond-to('mobile') {
+      display: none;
+    }
+  }
+
+  // --- Menu Déroulant (Angles vifs, galerie) ---
+  .search-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    width: 440px;
+    max-width: 90vw;
+    background-color: $color-white;
+    border: 1px solid $color-border-strong;
+    border-radius: 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-4px);
+    transition: opacity $transition-fast, transform $transition-fast;
+
+    &.search-dropdown--open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+  }
+
+  .dropdown-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background-color: $color-background-alt;
+    border-bottom: 1px solid $color-border-light;
+
+    .dropdown-title {
+      font-size: 0.72rem;
+      font-weight: $font-weight-semibold;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: $color-text-light;
+    }
+
+    .dropdown-count {
+      font-size: 0.72rem;
+      color: $color-primary;
+      font-weight: $font-weight-medium;
+      letter-spacing: 0.04em;
+    }
+  }
+
+  .results-list {
+    display: flex;
+    flex-direction: column;
+    max-height: 380px;
+    overflow-y: auto;
+  }
+
+  :global(.result-item) {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid $color-border-light;
+    cursor: pointer;
+    border-radius: 0;
+    transition: background-color $transition-fast;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover,
+    &.result-item--selected {
+      background-color: $color-tag-bg;
+
+      .result-title {
+        color: $color-primary;
+      }
+
+      .result-arrow {
+        color: $color-primary;
+        transform: translateX(3px);
+      }
+    }
+  }
+
+  :global(.result-thumb) {
+    width: 36px;
+    height: 36px;
+    border-radius: 0;
+    background-color: $color-surface;
+    border: 1px solid $color-border;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    .thumb-icon {
+      color: $color-primary;
+      font-size: 0.85rem;
+    }
+  }
+
+  :global(.result-info) {
+    flex: 1;
+    min-width: 0;
+  }
+
+  :global(.result-header) {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  :global(.result-title) {
+    font-size: 0.85rem;
+    font-weight: $font-weight-medium;
+    color: $color-text;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color $transition-fast;
+  }
+
+  :global(.result-year) {
+    font-size: 0.72rem;
+    color: $color-muted;
+    flex-shrink: 0;
+  }
+
+  :global(.result-sub) {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.15rem;
+  }
+
+  :global(.result-dim) {
+    font-size: 0.72rem;
+    color: $color-text-muted;
+  }
+
+  :global(.result-tag) {
+    font-size: 0.65rem;
+    padding: 0.05rem 0.35rem;
+    border-radius: 0;
+  }
+
+  :global(.result-arrow) {
+    font-size: 0.95rem;
+    color: $color-muted-light;
+    transition: transform $transition-fast, color $transition-fast;
+  }
+
+  // --- Empty State ---
+  .empty-state {
+    padding: 1.5rem 1rem;
+    text-align: center;
+
+    .empty-text {
+      font-size: 0.82rem;
+      color: $color-text-muted;
+      margin-bottom: 0.75rem;
+      text-align: center;
+    }
+
+    .empty-suggestions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+
+      .suggest-label {
+        font-size: 0.72rem;
+        color: $color-muted;
+      }
+    }
+
+    .suggest-btn {
+      background: $color-background-alt;
+      border: 1px solid $color-border;
+      border-radius: 0;
+      font-size: 0.72rem;
+      padding: 0.25rem 0.65rem;
+      color: $color-primary;
+      cursor: pointer;
+      transition: all $transition-fast;
+
+      &:hover {
+        background: $color-tag-bg;
+        border-color: $color-primary;
+      }
+    }
+  }
+</style>

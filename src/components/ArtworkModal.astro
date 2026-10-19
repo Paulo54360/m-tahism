@@ -1,0 +1,710 @@
+---
+// Modale de contemplation & d'analyse d'œuvre HD avec zoom interactif (Strictement 0 arrondi, esprit galerie)
+---
+
+<div id="artwork-modal" class="artwork-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="artwork-modal-backdrop" id="modal-backdrop"></div>
+
+  <div class="artwork-modal-container">
+    <div class="modal-top-bar">
+      <div class="modal-status-badge">
+        <span class="status-dot"></span>
+        <span>Exposition Haute Définition</span>
+      </div>
+      <button class="modal-close-btn" id="modal-close-btn" aria-label="Fermer la modale" title="Fermer (Échap)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="artwork-modal-content">
+      <!-- Zone Visuelle de l'Œuvre avec Zoom / Pan (Angles vifs) -->
+      <div class="modal-visual-column">
+        <div class="modal-image-viewport" id="modal-image-viewport">
+          <div class="modal-badge-wrapper">
+            <span class="artist-tag" id="modal-artist-ref">Image.X.X</span>
+            <span class="s3-cloud-tag" id="modal-s3-badge">AWS S3 plaumondpicture</span>
+          </div>
+
+          <!-- Outils de zoom architecturaux -->
+          <div class="zoom-controls">
+            <button type="button" class="zoom-btn" id="zoom-in-btn" title="Agrandir (Zoom +)">+</button>
+            <button type="button" class="zoom-btn" id="zoom-reset-btn" title="Réinitialiser le zoom">100%</button>
+            <button type="button" class="zoom-btn" id="zoom-out-btn" title="Réduire (Zoom -)">−</button>
+            <button type="button" class="zoom-btn" id="zoom-fullscreen-btn" title="Plein écran">⛶</button>
+          </div>
+
+          <!-- Rendu de l'œuvre avec zoom dynamique -->
+          <div class="zoom-stage" id="zoom-stage">
+            <img
+              id="modal-real-img"
+              src=""
+              alt="Œuvre HD"
+              class="modal-artwork-img"
+            />
+
+            <!-- Placeholder graphique de cadrage si aucun asset -->
+            <div class="artwork-preview-graphic" id="modal-placeholder-graphic" style="display: none;">
+              <div class="graphic-lines-cross"></div>
+              <div class="graphic-icon">✦</div>
+              <span class="graphic-title" id="modal-visual-title">Le Grand Mikado de la pensée humaine</span>
+              <span class="graphic-s3-key" id="modal-s3-key">artworks/le-grand-mikado-hd.webp</span>
+              <span class="graphic-hint">Liaison active vers le bucket S3 plaumondpicture</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cartouche descriptif & Analyse d'art -->
+      <div class="modal-info-column">
+        <div class="modal-header">
+          <span class="modal-category">Mouvement Métahiste &middot; Patrick Laumond</span>
+          <h2 class="modal-artwork-title" id="modal-title">Titre de l'œuvre</h2>
+          <div class="modal-red-divider"></div>
+        </div>
+
+        <div class="modal-metadata-grid">
+          <div class="meta-item">
+            <span class="meta-label">Année</span>
+            <span class="meta-value" id="modal-year">—</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Dimensions</span>
+            <span class="meta-value" id="modal-dimensions">—</span>
+          </div>
+          <div class="meta-item meta-item--full">
+            <span class="meta-label">Technique & Médium</span>
+            <span class="meta-value" id="modal-technique">—</span>
+          </div>
+          <div class="meta-item meta-item--full">
+            <span class="meta-label">Chemin Source AWS S3</span>
+            <span class="meta-value meta-s3-path" id="modal-s3-full-path">—</span>
+          </div>
+        </div>
+
+        <div class="modal-description-section">
+          <h4 class="description-heading">Note Esthétique & Cadrage</h4>
+          <p class="description-text" id="modal-description">—</p>
+        </div>
+
+        <div class="modal-tags-container" id="modal-tags">
+          <!-- Tags injectés dynamiquement -->
+        </div>
+
+        <div class="modal-actions-footer">
+          <a href="https://laumond.com" target="_blank" rel="noopener noreferrer" class="btn-laumond-external">
+            Consulter sur laumond.com ↗
+          </a>
+          <button class="btn-modal-dismiss" id="modal-dismiss-btn">
+            Retour à l'exposition
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import type { Artwork } from '../types/artwork';
+  import { getS3MediaUrl } from '../utils/s3';
+
+  class ArtworkModalManager {
+    modal: HTMLElement | null = null;
+    backdrop: HTMLElement | null = null;
+    closeBtn: HTMLElement | null = null;
+    dismissBtn: HTMLElement | null = null;
+
+    titleEl: HTMLElement | null = null;
+    visualTitleEl: HTMLElement | null = null;
+    yearEl: HTMLElement | null = null;
+    dimensionsEl: HTMLElement | null = null;
+    techniqueEl: HTMLElement | null = null;
+    descriptionEl: HTMLElement | null = null;
+    tagsEl: HTMLElement | null = null;
+    artistRefEl: HTMLElement | null = null;
+    s3KeyEl: HTMLElement | null = null;
+    s3FullPathEl: HTMLElement | null = null;
+
+    // Zoom & Médias
+    viewportEl: HTMLElement | null = null;
+    zoomStageEl: HTMLElement | null = null;
+    realImgEl: HTMLImageElement | null = null;
+    placeholderGraphicEl: HTMLElement | null = null;
+    zoomInBtn: HTMLElement | null = null;
+    zoomOutBtn: HTMLElement | null = null;
+    zoomResetBtn: HTMLElement | null = null;
+    zoomFsBtn: HTMLElement | null = null;
+
+    currentZoom = 1;
+
+    constructor() {
+      this.initElements();
+      this.bindEvents();
+    }
+
+    initElements() {
+      this.modal = document.getElementById('artwork-modal');
+      this.backdrop = document.getElementById('modal-backdrop');
+      this.closeBtn = document.getElementById('modal-close-btn');
+      this.dismissBtn = document.getElementById('modal-dismiss-btn');
+
+      this.titleEl = document.getElementById('modal-title');
+      this.visualTitleEl = document.getElementById('modal-visual-title');
+      this.yearEl = document.getElementById('modal-year');
+      this.dimensionsEl = document.getElementById('modal-dimensions');
+      this.techniqueEl = document.getElementById('modal-technique');
+      this.descriptionEl = document.getElementById('modal-description');
+      this.tagsEl = document.getElementById('modal-tags');
+      this.artistRefEl = document.getElementById('modal-artist-ref');
+      this.s3KeyEl = document.getElementById('modal-s3-key');
+      this.s3FullPathEl = document.getElementById('modal-s3-full-path');
+
+      this.viewportEl = document.getElementById('modal-image-viewport');
+      this.zoomStageEl = document.getElementById('zoom-stage');
+      this.realImgEl = document.getElementById('modal-real-img') as HTMLImageElement;
+      this.placeholderGraphicEl = document.getElementById('modal-placeholder-graphic');
+
+      this.zoomInBtn = document.getElementById('zoom-in-btn');
+      this.zoomOutBtn = document.getElementById('zoom-out-btn');
+      this.zoomResetBtn = document.getElementById('zoom-reset-btn');
+      this.zoomFsBtn = document.getElementById('zoom-fullscreen-btn');
+    }
+
+    bindEvents() {
+      this.closeBtn?.addEventListener('click', () => this.close());
+      this.backdrop?.addEventListener('click', () => this.close());
+      this.dismissBtn?.addEventListener('click', () => this.close());
+
+      // Écoute clavier (Échap)
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && this.isOpen()) {
+          this.close();
+        }
+      });
+
+      // Zoom boutons
+      this.zoomInBtn?.addEventListener('click', () => this.applyZoom(0.25));
+      this.zoomOutBtn?.addEventListener('click', () => this.applyZoom(-0.25));
+      this.zoomResetBtn?.addEventListener('click', () => this.resetZoom());
+      this.zoomFsBtn?.addEventListener('click', () => this.toggleFullscreen());
+
+      // Écoute événement global d'ouverture
+      window.addEventListener('open-artwork-modal', ((e: CustomEvent<Artwork>) => {
+        if (e.detail) {
+          this.open(e.detail);
+        }
+      }) as EventListener);
+    }
+
+    isOpen(): boolean {
+      return this.modal?.classList.contains('artwork-modal--open') ?? false;
+    }
+
+    open(artwork: Artwork) {
+      if (!this.modal) return;
+
+      this.resetZoom();
+
+      if (this.titleEl) this.titleEl.textContent = artwork.title;
+      if (this.visualTitleEl) this.visualTitleEl.textContent = artwork.title;
+      if (this.yearEl) this.yearEl.textContent = String(artwork.year);
+      if (this.dimensionsEl) this.dimensionsEl.textContent = artwork.dimensions;
+      if (this.techniqueEl) this.techniqueEl.textContent = artwork.technique;
+      if (this.descriptionEl) this.descriptionEl.textContent = artwork.description;
+
+      const s3Url = getS3MediaUrl(artwork.s3Key);
+      if (this.s3KeyEl) this.s3KeyEl.textContent = artwork.s3Key;
+      if (this.s3FullPathEl) this.s3FullPathEl.textContent = s3Url;
+
+      if (this.artistRefEl) {
+        this.artistRefEl.textContent = artwork.artistRef || 'Image.Oeuvre';
+      }
+
+      if (this.tagsEl) {
+        this.tagsEl.innerHTML = '';
+        artwork.tags.forEach((tag) => {
+          const span = document.createElement('span');
+          span.className = 'modal-tag-chip';
+          span.textContent = `#${tag}`;
+          this.tagsEl?.appendChild(span);
+        });
+      }
+
+      // Chargement direct et immédiat de l'image (locale ou S3)
+      const directSrc = artwork.imageUrl || s3Url;
+      if (this.realImgEl && this.placeholderGraphicEl) {
+        if (directSrc) {
+          this.realImgEl.src = directSrc;
+          this.realImgEl.style.display = 'block';
+          this.placeholderGraphicEl.style.display = 'none';
+
+          this.realImgEl.onerror = () => {
+            // En cas d'échec sur la source primaire, tenter l'URL S3 ou basculer sur le placeholder
+            if (this.realImgEl && this.realImgEl.src !== s3Url && s3Url) {
+              this.realImgEl.src = s3Url;
+            } else if (this.realImgEl && this.placeholderGraphicEl) {
+              this.realImgEl.style.display = 'none';
+              this.placeholderGraphicEl.style.display = 'flex';
+            }
+          };
+        } else {
+          this.realImgEl.style.display = 'none';
+          this.placeholderGraphicEl.style.display = 'flex';
+        }
+      }
+
+      this.modal.classList.add('artwork-modal--open');
+      this.modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    applyZoom(delta: number) {
+      this.currentZoom = Math.min(Math.max(0.75, this.currentZoom + delta), 3.0);
+      this.updateZoomTransform();
+    }
+
+    resetZoom() {
+      this.currentZoom = 1;
+      this.updateZoomTransform();
+    }
+
+    updateZoomTransform() {
+      if (this.zoomStageEl) {
+        this.zoomStageEl.style.transform = `scale(${this.currentZoom})`;
+      }
+      if (this.zoomResetBtn) {
+        this.zoomResetBtn.textContent = `${Math.round(this.currentZoom * 100)}%`;
+      }
+    }
+
+    toggleFullscreen() {
+      if (!this.viewportEl) return;
+      if (!document.fullscreenElement) {
+        this.viewportEl.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    close() {
+      if (!this.modal) return;
+      this.modal.classList.remove('artwork-modal--open');
+      this.modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      this.resetZoom();
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    new ArtworkModalManager();
+  });
+</script>
+
+<style lang="scss">
+  @use '../styles/variables' as *;
+  @use '../styles/mixins' as *;
+
+  .artwork-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1rem, 3vw, 2.5rem);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity $transition-normal;
+
+    &.artwork-modal--open {
+      opacity: 1;
+      pointer-events: auto;
+
+      .artwork-modal-container {
+        transform: scale(1) translateY(0);
+      }
+    }
+  }
+
+  .artwork-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(10, 10, 12, 0.82);
+    backdrop-filter: blur(4px);
+  }
+
+  .artwork-modal-container {
+    position: relative;
+    background-color: $color-white;
+    width: 100%;
+    max-width: 1150px;
+    max-height: 90vh;
+    border-radius: 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 1px solid $color-border-strong;
+    overflow-y: auto;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    transform: scale(0.98) translateY(10px);
+    transition: transform $transition-smooth;
+  }
+
+  .modal-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 1.2rem;
+    background-color: $color-background;
+    border-bottom: 1px solid $color-border;
+  }
+
+  .modal-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    font-weight: $font-weight-regular;
+    color: $color-primary;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 0;
+      background-color: $color-primary;
+    }
+  }
+
+  .modal-close-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 0;
+    background-color: transparent;
+    border: 1px solid transparent;
+    color: $color-text-light;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $color-primary;
+      color: $color-white;
+    }
+  }
+
+  .artwork-modal-content {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    min-height: 560px;
+
+    @include respond-to('tablet') {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  // --- Colonne Visuelle ---
+  .modal-visual-column {
+    background-color: $color-surface;
+    border-right: 1px solid $color-border;
+    padding: clamp(1rem, 2.5vw, 2rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @include respond-to('tablet') {
+      border-right: none;
+      border-bottom: 1px solid $color-border;
+    }
+  }
+
+  .modal-image-viewport {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background-color: #f2f2f2;
+    border: 1px solid $color-border-strong;
+    border-radius: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-badge-wrapper {
+    position: absolute;
+    top: $spacing-md;
+    left: $spacing-md;
+    display: flex;
+    gap: $spacing-xs;
+    z-index: 10;
+  }
+
+  .s3-cloud-tag {
+    font-family: monospace;
+    font-size: 0.65rem;
+    font-weight: $font-weight-medium;
+    background-color: rgba(30, 41, 59, 0.9);
+    color: $color-white;
+    padding: 0.12rem 0.45rem;
+    border-radius: 0;
+    letter-spacing: 0.04em;
+  }
+
+  .zoom-controls {
+    position: absolute;
+    bottom: $spacing-md;
+    right: $spacing-md;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid $color-border;
+    border-radius: 0;
+    padding: 0;
+    z-index: 10;
+  }
+
+  .zoom-btn {
+    background: none;
+    border: none;
+    border-right: 1px solid $color-border;
+    border-radius: 0;
+    font-family: $font-family-base;
+    font-size: 0.75rem;
+    font-weight: $font-weight-regular;
+    color: $color-text;
+    padding: 0.25rem 0.55rem;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:last-child {
+      border-right: none;
+    }
+
+    &:hover {
+      background-color: $color-tag-bg;
+      color: $color-primary;
+    }
+  }
+
+  .zoom-stage {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease-out;
+  }
+
+  .modal-artwork-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 0;
+    display: block;
+  }
+
+  .artwork-preview-graphic {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: $spacing-xs;
+    padding: $spacing-lg;
+    z-index: 2;
+
+    .graphic-icon {
+      font-size: 2.5rem;
+      color: $color-primary;
+    }
+
+    .graphic-title {
+      font-size: 1.05rem;
+      font-weight: $font-weight-medium;
+      color: $color-text;
+      max-width: 320px;
+    }
+
+    .graphic-s3-key {
+      font-family: monospace;
+      font-size: 0.72rem;
+      color: $color-primary;
+      background-color: $color-white;
+      padding: 0.2rem 0.5rem;
+      border: 1px solid $color-border;
+      border-radius: 0;
+    }
+
+    .graphic-hint {
+      font-size: 0.7rem;
+      color: $color-muted;
+    }
+  }
+
+  // --- Colonne d'Information ---
+  .modal-info-column {
+    padding: clamp(1.8rem, 3.5vw, 2.8rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .modal-header {
+    margin-bottom: $spacing-md;
+
+    .modal-category {
+      font-size: 0.72rem;
+      font-weight: $font-weight-medium;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: $color-primary;
+      display: block;
+      margin-bottom: $spacing-xs;
+    }
+
+    .modal-artwork-title {
+      font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+      font-weight: $font-weight-light;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: $color-text;
+      line-height: 1.25;
+      margin-bottom: $spacing-sm;
+    }
+
+    .modal-red-divider {
+      height: 3px;
+      width: 50px;
+      background-color: $color-primary;
+      border-radius: 0;
+    }
+  }
+
+  .modal-metadata-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-sm;
+    padding: $spacing-md 0;
+    border-top: 1px solid $color-border-light;
+    border-bottom: 1px solid $color-border-light;
+    margin-bottom: $spacing-md;
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+
+      &--full {
+        grid-column: 1 / -1;
+      }
+    }
+
+    .meta-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: $color-muted;
+      font-weight: $font-weight-regular;
+    }
+
+    .meta-value {
+      font-size: 0.88rem;
+      color: $color-text;
+      font-weight: $font-weight-regular;
+    }
+
+    .meta-s3-path {
+      font-family: monospace;
+      font-size: 0.72rem;
+      color: $color-text-light;
+      word-break: break-all;
+    }
+  }
+
+  .modal-description-section {
+    margin-bottom: $spacing-md;
+
+    .description-heading {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: $color-text-light;
+      margin-bottom: $spacing-xs;
+    }
+
+    .description-text {
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: $color-text;
+      margin: 0;
+    }
+  }
+
+  .modal-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-bottom: $spacing-lg;
+
+    :global(.modal-tag-chip) {
+      font-size: 0.7rem;
+      color: $color-text-light;
+      background-color: $color-background-alt;
+      border: 1px solid $color-border;
+      border-radius: 0;
+      padding: 0.15rem 0.5rem;
+    }
+  }
+
+  .modal-actions-footer {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    flex-wrap: wrap;
+    padding-top: $spacing-md;
+    border-top: 1px solid $color-border-light;
+  }
+
+  .btn-laumond-external {
+    font-size: 0.8rem;
+    font-weight: $font-weight-regular;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: $color-white;
+    background-color: $color-primary;
+    border: 1px solid $color-primary;
+    border-radius: 0;
+    padding: 0.65rem 1.4rem;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $color-primary-dark;
+      border-color: $color-primary-dark;
+    }
+  }
+
+  .btn-modal-dismiss {
+    font-size: 0.8rem;
+    font-weight: $font-weight-regular;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid $color-text;
+    border-radius: 0;
+    color: $color-text;
+    padding: 0.65rem 1.4rem;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $color-text;
+      color: $color-white;
+    }
+  }
+</style>

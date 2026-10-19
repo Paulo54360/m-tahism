@@ -1,0 +1,294 @@
+---
+import { getS3MediaUrl } from '../utils/s3';
+import { artworksData } from '../data/artworks';
+
+interface Props {
+  id: string;
+  caption?: string;
+  aspectRatio?: string;
+  altText?: string;
+  artworkId?: string;
+  s3Key?: string;
+  src?: string;
+}
+
+const {
+  id,
+  caption,
+  aspectRatio = '16 / 9',
+  altText,
+  artworkId,
+  s3Key,
+  src
+} = Astro.props;
+
+// Résolution de l'œuvre associée dans le catalogue BDD
+const matchedArtwork = artworksData.find(
+  (a) => (artworkId && a.id === artworkId) || a.artistRef === id
+);
+
+// Source d'image prioritaire : src directe > imageUrl BDD > URL S3 résolue
+const effectiveSrc = src || (matchedArtwork?.imageUrl) || (s3Key ? getS3MediaUrl(s3Key) : (matchedArtwork?.s3Key ? getS3MediaUrl(matchedArtwork.s3Key) : ''));
+const effectiveS3Key = s3Key || matchedArtwork?.s3Key || '';
+---
+
+<figure class="image-placeholder-card" data-artist-ref={id} data-artwork-id={artworkId || matchedArtwork?.id} data-s3-key={effectiveS3Key}>
+  <div
+    class="image-frame"
+    style={`aspect-ratio: ${aspectRatio};`}
+    role="button"
+    tabindex="0"
+    title="Cliquer pour contempler l'œuvre & les métadonnées"
+  >
+    <!-- Tag Artiste Collaboratif permanent (Angle vif 90°) -->
+    <div class="card-tag">
+      <span class="artist-tag">{id}</span>
+      {effectiveS3Key && <span class="s3-indicator-badge">S3</span>}
+    </div>
+
+    <!-- Badge Zoom & Plein écran (Angle vif 90°) -->
+    <div class="card-zoom-badge">
+      <span>🔎 Zoom HD</span>
+    </div>
+
+    <!-- Image réelle chargée directement sans arrondi -->
+    {effectiveSrc ? (
+      <img
+        src={effectiveSrc}
+        alt={altText || matchedArtwork?.title || id}
+        class="real-artwork-image"
+        loading="lazy"
+        decoding="async"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+      />
+    ) : null}
+
+    <!-- Cadre de cadrage géométrique (Placeholder si aucun asset) -->
+    <div class="frame-content" style={effectiveSrc ? 'display: none;' : 'display: flex;'}>
+      <div class="art-grid-lines">
+        <div class="cross-h"></div>
+        <div class="cross-v"></div>
+      </div>
+      <div class="frame-symbol">✛</div>
+      <div class="frame-label">{altText || id}</div>
+      <span class="frame-hint">
+        {effectiveS3Key ? `Asset S3 : ${effectiveS3Key}` : "Emplacement média HD"}
+      </span>
+    </div>
+  </div>
+
+  {caption && (
+    <figcaption class="image-caption">
+      <span class="caption-marker">Fig. {id}</span>
+      <span class="caption-text">{caption}</span>
+    </figcaption>
+  )}
+</figure>
+
+<script>
+  import { artworksData } from '../data/artworks';
+
+  // Permettre l'ouverture de la modale au clic sur n'importe quelle image ou placeholder
+  document.querySelectorAll('.image-placeholder-card').forEach((card) => {
+    const frame = card.querySelector('.image-frame');
+    const artistRef = card.getAttribute('data-artist-ref');
+    const artworkId = card.getAttribute('data-artwork-id');
+    const cardS3Key = card.getAttribute('data-s3-key');
+
+    const handleClick = () => {
+      // Recherche de l'œuvre associée dans la base
+      const matched = artworksData.find(
+        (a) => (artworkId && a.id === artworkId) || (artistRef && a.artistRef === artistRef)
+      );
+
+      if (matched) {
+        window.dispatchEvent(new CustomEvent('open-artwork-modal', { detail: matched }));
+      } else {
+        // Fallback avec les infos du tag et de S3
+        window.dispatchEvent(
+          new CustomEvent('open-artwork-modal', {
+            detail: {
+              id: artistRef || 'artwork',
+              title: `Œuvre de référence ${artistRef}`,
+              year: '2024',
+              dimensions: 'Format monumental variable',
+              technique: 'Technique mixte Métahiste sur lin',
+              s3Key: cardS3Key || `artworks/${artistRef?.toLowerCase().replace('.', '-')}.webp`,
+              imageUrl: '',
+              description: `Emplacement réservé pour l'œuvre ${artistRef}. L'asset est relié au bucket AWS S3 plaumondpicture (eu-west-3).`,
+              tags: ['métahisme', 'patrick laumond', 'exposition', 's3'],
+              artistRef: artistRef || 'Image'
+            }
+          })
+        );
+      }
+    };
+
+    frame?.addEventListener('click', handleClick);
+    frame?.addEventListener('keydown', (e: Event) => {
+      const ke = e as KeyboardEvent;
+      if (ke.key === 'Enter' || ke.key === ' ') {
+        ke.preventDefault();
+        handleClick();
+      }
+    });
+  });
+</script>
+
+<style lang="scss">
+  @use '../styles/variables' as *;
+  @use '../styles/mixins' as *;
+
+  .image-placeholder-card {
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  .image-frame {
+    position: relative;
+    width: 100%;
+    background-color: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    outline: none;
+    transition: border-color $transition-normal;
+
+    &:hover,
+    &:focus-visible {
+      border-color: $color-primary;
+
+      .card-zoom-badge {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+
+  .card-tag {
+    position: absolute;
+    top: $spacing-md;
+    left: $spacing-md;
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    z-index: 10;
+  }
+
+  .s3-indicator-badge {
+    font-family: monospace;
+    font-size: 0.65rem;
+    font-weight: $font-weight-semibold;
+    background-color: rgba(30, 41, 59, 0.9);
+    color: $color-white;
+    padding: 0.12rem 0.45rem;
+    border-radius: 0;
+    letter-spacing: 0.05em;
+  }
+
+  .card-zoom-badge {
+    position: absolute;
+    top: $spacing-md;
+    right: $spacing-md;
+    background-color: rgba(255, 255, 255, 0.95);
+    color: $color-primary;
+    border: 1px solid $color-border;
+    border-radius: 0;
+    font-size: 0.72rem;
+    font-weight: $font-weight-medium;
+    padding: 0.25rem 0.6rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(-2px);
+    transition: all $transition-fast;
+    z-index: 10;
+  }
+
+  // Image réelle directement chargée
+  .real-artwork-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 0;
+  }
+
+  // Placeholder géométrique
+  .art-grid-lines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.25;
+
+    .cross-h {
+      position: absolute;
+      top: 50%;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      border-top: 1px dashed $color-border-strong;
+    }
+
+    .cross-v {
+      position: absolute;
+      left: 50%;
+      top: 10%;
+      bottom: 10%;
+      width: 1px;
+      border-left: 1px dashed $color-border-strong;
+    }
+  }
+
+  .frame-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: $spacing-xs;
+    padding: $spacing-lg;
+    z-index: 2;
+  }
+
+  .frame-symbol {
+    font-size: 1.8rem;
+    color: $color-muted;
+    transition: transform $transition-smooth, color $transition-normal;
+  }
+
+  .frame-label {
+    font-family: $font-family-base;
+    font-size: 0.85rem;
+    font-weight: $font-weight-medium;
+    color: $color-text;
+    letter-spacing: 0.05em;
+  }
+
+  .frame-hint {
+    font-size: 0.72rem;
+    color: $color-text-muted;
+    max-width: 280px;
+    word-break: break-all;
+  }
+
+  .image-caption {
+    display: flex;
+    align-items: baseline;
+    gap: $spacing-xs;
+    font-size: 0.75rem;
+    color: $color-text-light;
+    line-height: 1.4;
+
+    .caption-marker {
+      font-weight: $font-weight-semibold;
+      color: $color-primary;
+    }
+  }
+</style>
