@@ -180,10 +180,7 @@ const interviewQuestions = [
   .interview-page {
     background-color: $color-background;
     padding-bottom: clamp(4rem, 8vw, 7rem);
-  }
-
-  .tag-row {
-    margin-bottom: 0.35rem;
+    @include green-accent-scope;
   }
 
   .tag-group {
@@ -197,15 +194,6 @@ const interviewQuestions = [
     padding-top: clamp(2.5rem, 6vw, 4.5rem);
     padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
     background-color: $color-background;
-    --card-hover-border: #{$color-green-symbol};
-    --badge-accent-color: #{$color-green-symbol};
-    --accent-divider: #{$color-green-symbol};
-
-    .artist-tag {
-      background-color: rgba(9, 70, 41, 0.06);
-      border-color: rgba(9, 70, 41, 0.25);
-      color: $color-green-symbol;
-    }
   }
 
   .hero-top-badge {
@@ -257,14 +245,6 @@ const interviewQuestions = [
   // --- Visuel de tête ---
   .artist-visual-section {
     padding-bottom: clamp(2rem, 4vw, 3.5rem);
-    --card-hover-border: #{$color-green-symbol};
-    --badge-accent-color: #{$color-green-symbol};
-
-    .artist-tag {
-      background-color: rgba(9, 70, 41, 0.06);
-      border-color: rgba(9, 70, 41, 0.25);
-      color: $color-green-symbol;
-    }
   }
 
   .visual-wrapper {
@@ -275,14 +255,6 @@ const interviewQuestions = [
   // --- Corps d'interview ---
   .interview-body-section {
     padding-top: $spacing-xl;
-    --card-hover-border: #{$color-green-symbol};
-    --badge-accent-color: #{$color-green-symbol};
-
-    .artist-tag {
-      background-color: rgba(9, 70, 41, 0.06);
-      border-color: rgba(9, 70, 41, 0.25);
-      color: $color-green-symbol;
-    }
   }
 
   .interview-container {

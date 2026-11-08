@@ -150,17 +150,83 @@ export const artworksData: Artwork[] = [
   }
 ];
 
+export const CATEGORY_LABELS: Record<number, string> = {
+  9: 'Transcriptions',
+  10: 'Archétypes',
+  11: 'Déploiement',
+  12: 'Dessins',
+  13: 'Archétypes',
+  14: 'Déploiement',
+  15: 'Dessins',
+};
+
 /**
- * Fonction de recherche dans le catalogue BDD (avec filtrage multi-critères)
+ * Extrait un tableau d'URLs d'images à partir de la valeur brute issue de Supabase (JSON ou chaîne)
  */
-export function searchArtworks(query: string): Artwork[] {
+export function parseImageUrls(raw: unknown): string[] {
+  if (!raw) return [];
+  if (Array.isArray(raw)) return raw.filter(Boolean).map(String);
+  if (typeof raw === 'string') {
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed.filter(Boolean).map(String) : [raw];
+    } catch {
+      return [raw];
+    }
+  }
+  return [];
+}
+
+/**
+ * Extrait la première URL d'image à partir de la valeur brute issue de Supabase
+ */
+export function parseFirstUrl(raw: unknown): string {
+  return parseImageUrls(raw)[0] || '';
+}
+
+export interface SupabaseArtworkRow {
+  id: number | string;
+  title?: string | null;
+  description?: string | null;
+  category_id?: number | string | null;
+  folder_path?: string | null;
+  image_urls?: unknown;
+  created_at?: string | null;
+}
+
+/**
+ * Convertit une ligne de la table `artworks` Supabase en objet `Artwork` normalisé
+ */
+export function mapDbRowToArtwork(row: SupabaseArtworkRow): Artwork {
+  const imgUrl = parseFirstUrl(row.image_urls);
+  const catName = CATEGORY_LABELS[Number(row.category_id)] || 'Métahisme';
+  const year = row.created_at ? String(new Date(row.created_at).getFullYear()) : '2024';
+  const title = row.title || 'Œuvre Métahiste';
+
+  return {
+    id: `db-${row.id}`,
+    title,
+    year,
+    dimensions: catName,
+    technique: `${catName} — ${row.folder_path || 'Patrick Laumond'}`,
+    s3Key: imgUrl,
+    imageUrl: imgUrl,
+    description: row.description || `${title} (${catName})`,
+    tags: [catName.toLowerCase(), title.toLowerCase(), 'métahisme'],
+  };
+}
+
+/**
+ * Fonction de recherche dans un catalogue d'œuvres (avec filtrage multi-critères)
+ */
+export function searchArtworks(query: string, collection: Artwork[] = artworksData): Artwork[] {
   if (!query || query.trim() === '') {
-    return artworksData;
+    return collection;
   }
 
   const cleanQuery = query.toLowerCase().trim();
 
-  return artworksData.filter((artwork) => {
+  return collection.filter((artwork) => {
     const matchTitle = artwork.title.toLowerCase().includes(cleanQuery);
     const matchTags = artwork.tags.some((t) => t.toLowerCase().includes(cleanQuery));
     const matchDesc = artwork.description.toLowerCase().includes(cleanQuery);

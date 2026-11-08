@@ -53,6 +53,7 @@
 
 <script>
   import type { Artwork } from '../types/artwork';
+  import { searchArtworks } from '../data/artworks';
 
   class SearchController {
     widget: HTMLElement | null = null;
@@ -177,19 +178,13 @@
     }
 
     performSearch(query: string) {
-      const q = query.trim().toLowerCase();
+      const q = query.trim();
       this.selectedIndex = -1;
 
       if (!q) {
         this.currentResults = this.catalog.slice(0, 5);
       } else {
-        this.currentResults = this.catalog.filter((art) => {
-          const matchTitle = art.title.toLowerCase().includes(q);
-          const matchTags = art.tags.some((t) => t.toLowerCase().includes(q));
-          const matchDesc = art.description.toLowerCase().includes(q);
-          const matchRef = art.artistRef ? art.artistRef.toLowerCase().includes(q) : false;
-          return matchTitle || matchTags || matchDesc || matchRef;
-        });
+        this.currentResults = searchArtworks(q, this.catalog);
       }
 
       this.renderDropdown();
@@ -215,22 +210,47 @@
           item.setAttribute('role', 'option');
           item.setAttribute('data-index', String(index));
 
-          item.innerHTML = `
-            <div class="result-thumb">
-              <span class="thumb-icon">✦</span>
-            </div>
-            <div class="result-info">
-              <div class="result-header">
-                <span class="result-title">${art.title}</span>
-                <span class="result-year">${art.year}</span>
-              </div>
-              <div class="result-sub">
-                <span class="result-dim">${art.dimensions}</span>
-                ${art.artistRef ? `<span class="artist-tag result-tag">${art.artistRef}</span>` : ''}
-              </div>
-            </div>
-            <div class="result-arrow">→</div>
-          `;
+          const thumb = document.createElement('div');
+          thumb.className = 'result-thumb';
+          const thumbIcon = document.createElement('span');
+          thumbIcon.className = 'thumb-icon';
+          thumbIcon.textContent = '✦';
+          thumb.appendChild(thumbIcon);
+
+          const info = document.createElement('div');
+          info.className = 'result-info';
+
+          const header = document.createElement('div');
+          header.className = 'result-header';
+          const title = document.createElement('span');
+          title.className = 'result-title';
+          title.textContent = art.title;
+          const year = document.createElement('span');
+          year.className = 'result-year';
+          year.textContent = String(art.year);
+          header.append(title, year);
+
+          const sub = document.createElement('div');
+          sub.className = 'result-sub';
+          const dim = document.createElement('span');
+          dim.className = 'result-dim';
+          dim.textContent = art.dimensions;
+          sub.appendChild(dim);
+
+          if (art.artistRef) {
+            const refTag = document.createElement('span');
+            refTag.className = 'artist-tag result-tag';
+            refTag.textContent = art.artistRef;
+            sub.appendChild(refTag);
+          }
+
+          info.append(header, sub);
+
+          const arrow = document.createElement('div');
+          arrow.className = 'result-arrow';
+          arrow.textContent = '→';
+
+          item.append(thumb, info, arrow);
 
           item.addEventListener('click', () => this.selectArtwork(art));
           item.addEventListener('mouseenter', () => {
@@ -309,7 +329,7 @@
     border-radius: 0;
     display: flex;
     max-width: 400px;
-    min-width: 200px;
+    min-width: 140px;
     width: 100%;
     position: relative;
     overflow: visible;
@@ -395,7 +415,7 @@
     left: -1px;
     right: -1px;
     width: calc(100% + 2px);
-    min-width: 380px;
+    min-width: min(380px, 88vw);
     background-color: $color-white;
     border: 1px solid $color-border-strong;
     border-top: none;

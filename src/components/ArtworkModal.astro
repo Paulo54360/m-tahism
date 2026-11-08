@@ -138,6 +138,7 @@
     zoomFsBtn: HTMLElement | null = null;
 
     currentZoom = 1;
+    lastFocusedElement: HTMLElement | null = null;
 
     constructor() {
       this.initElements();
@@ -205,6 +206,7 @@
     open(artwork: Artwork) {
       if (!this.modal) return;
 
+      this.lastFocusedElement = document.activeElement as HTMLElement | null;
       this.resetZoom();
 
       if (this.titleEl) this.titleEl.textContent = artwork.title;
@@ -258,6 +260,7 @@
       this.modal.classList.add('artwork-modal--open');
       this.modal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
+      this.closeBtn?.focus();
     }
 
     applyZoom(delta: number) {
@@ -294,6 +297,7 @@
       this.modal.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
       this.resetZoom();
+      this.lastFocusedElement?.focus();
     }
   }
 
@@ -672,35 +676,15 @@
   }
 
   .btn-laumond-external {
+    @include gallery-button-primary;
     font-size: 0.8rem;
-    font-weight: $font-weight-regular;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: $color-white;
-    background-color: $color-primary;
-    border: 1px solid $color-primary;
-    border-radius: 0;
     padding: 0.65rem 1.4rem;
-    transition: all $transition-fast;
-
-    &:hover {
-      background-color: $color-primary-dark;
-      border-color: $color-primary-dark;
-    }
   }
 
   .btn-modal-dismiss {
+    @include gallery-button-secondary($color-text, $color-text);
     font-size: 0.8rem;
-    font-weight: $font-weight-regular;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    background: none;
-    border: 1px solid $color-text;
-    border-radius: 0;
-    color: $color-text;
     padding: 0.65rem 1.4rem;
-    cursor: pointer;
-    transition: all $transition-fast;
 
     &:hover {
       background-color: $color-text;

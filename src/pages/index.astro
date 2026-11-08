@@ -3,12 +3,17 @@ import Layout from '../layouts/Layout.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import ImagePlaceholder from '../components/ImagePlaceholder.astro';
 import { supabase } from '../db/supabase';
+import { parseImageUrls } from '../data/artworks';
 
 interface TimelineImageItem {
   year: string;
   imageId: string;
   s3Key: string;
   imageCaption: string;
+  title?: string;
+  dimensions?: string;
+  technique?: string;
+  description?: string;
 }
 
 interface TimelineCategoryGroup {
@@ -21,25 +26,20 @@ interface TimelineCategoryGroup {
 }
 
 // Récupération dynamique depuis Supabase des œuvres "Le Grand Mikado de la pensée humaine"
-const { data: mikadoArtworks } = await supabase
-  .from('artworks')
-  .select('*')
-  .ilike('title', '%Mikado%')
-  .is('deleted_at', null)
-  .order('id', { ascending: true });
+let mikadoArtworks: Record<string, any>[] = [];
+if (supabase) {
+  const { data, error } = await supabase
+    .from('artworks')
+    .select('*')
+    .ilike('title', '%Mikado%')
+    .is('deleted_at', null)
+    .order('id', { ascending: true });
 
-function parseImageUrls(raw: unknown): string[] {
-  if (!raw) return [];
-  if (Array.isArray(raw)) return raw.filter(Boolean);
-  if (typeof raw === 'string') {
-    try {
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed.filter(Boolean) : [raw];
-    } catch {
-      return [raw];
-    }
+  if (error) {
+    console.error('[Index] Erreur Supabase lors du chargement de la chronologie :', error.message);
+  } else if (data) {
+    mikadoArtworks = data;
   }
-  return [];
 }
 
 // Définition des 4 grandes catégories dans l'ordre chronologique de création
@@ -100,6 +100,10 @@ for (const artwork of mikadoArtworks || []) {
       year: createdYear,
       imageId: `Image.1.${dynamicIndex++}`,
       s3Key: url,
+      title: artwork.title || 'Le Grand Mikado de la pensée humaine',
+      dimensions: group.label,
+      technique: `${group.label} — ${ group.subtitle }`,
+      description: artwork.description || `${artwork.title} (${group.label})`,
       imageCaption: artwork.description
         ? `${artwork.title} — ${artwork.description}`
         : artwork.title,
@@ -170,9 +174,8 @@ const activeCategoryGroups = categoryGroups.filter((g) => g.items.length > 0);
               <span class="node-category-badge">{group.label}</span>
             </div>
 
-            <!-- Nœud de l'année centré sur l'axe chronologique -->
+            <!-- Nœud centré sur l'axe chronologique -->
             <div class="timeline-node timeline-node--category">
-              <span class="node-number">{group.year}</span>
               <span class="node-dot"></span>
             </div>
 
@@ -187,6 +190,11 @@ const activeCategoryGroups = categoryGroups.filter((g) => g.items.length > 0);
                       aspectRatio="16 / 10"
                       altText={step.imageCaption}
                       caption={step.imageCaption}
+                      title={step.title}
+                      year={step.year}
+                      dimensions={step.dimensions}
+                      technique={step.technique}
+                      description={step.description}
                     />
                   </div>
                 </div>
@@ -203,25 +211,13 @@ const activeCategoryGroups = categoryGroups.filter((g) => g.items.length > 0);
   @use '../styles/variables' as *;
   @use '../styles/mixins' as *;
 
-  .tag-row {
-    margin-bottom: 0.35rem;
-  }
-
   // --- Hero Section ---
   .hero-section {
     background-color: $color-background;
     padding-top: clamp(2rem, 5vw, 4.5rem);
     padding-bottom: clamp(3rem, 6vw, 5rem);
     border-bottom: 1px solid $color-border-light;
-    --card-hover-border: #{$color-green-symbol};
-    --badge-accent-color: #{$color-green-symbol};
-    --accent-divider: #{$color-green-symbol};
-
-    .artist-tag {
-      background-color: rgba(9, 70, 41, 0.06);
-      border-color: rgba(9, 70, 41, 0.25);
-      color: $color-green-symbol;
-    }
+    @include green-accent-scope;
   }
 
   .hero-container {
@@ -276,48 +272,11 @@ const activeCategoryGroups = categoryGroups.filter((g) => g.items.length > 0);
   }
 
   .btn-primary-action {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background-color: $color-green-symbol;
-    color: $color-white;
-    padding: 0.8rem 1.8rem;
-    border: 1px solid $color-green-symbol;
-    border-radius: 0;
-    font-size: 0.82rem;
-    font-weight: $font-weight-regular;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    box-shadow: none;
-    transition: all $transition-fast;
-
-    &:hover {
-      background-color: $color-green-symbol-dark;
-      border-color: $color-green-symbol-dark;
-      color: $color-white;
-    }
+    @include gallery-button-primary($color-green-symbol, $color-green-symbol-dark);
   }
 
   .btn-secondary-action {
-    display: inline-flex;
-    align-items: center;
-    background-color: transparent;
-    color: $color-text;
-    border: 1px solid $color-border-strong;
-    padding: 0.8rem 1.8rem;
-    border-radius: 0;
-    font-size: 0.82rem;
-    font-weight: $font-weight-regular;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    box-shadow: none;
-    transition: all $transition-fast;
-
-    &:hover {
-      border-color: $color-green-symbol;
-      color: $color-green-symbol;
-      background-color: transparent;
-    }
+    @include gallery-button-secondary($color-green-symbol, $color-border-strong);
   }
 
   .hero-visual-block {
@@ -333,15 +292,7 @@ const activeCategoryGroups = categoryGroups.filter((g) => g.items.length > 0);
   .timeline-section {
     background-color: $color-background-alt;
     @include section-padding;
-    --card-hover-border: #{$color-green-symbol};
-    --badge-accent-color: #{$color-green-symbol};
-    --accent-divider: #{$color-green-symbol};
-
-    .artist-tag {
-      background-color: rgba(9, 70, 41, 0.06);
-      border-color: rgba(9, 70, 41, 0.25);
-      color: $color-green-symbol;
-    }
+    @include green-accent-scope;
   }
 
   .section-intro {
@@ -404,19 +355,8 @@ const activeCategoryGroups = categoryGroups.filter((g) => g.items.length > 0);
   }
 
   .node-category-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background-color: $color-green-symbol;
-    color: $color-white;
-    padding: 0.8rem 1.8rem;
-    border: 1px solid $color-green-symbol;
-    border-radius: 0;
-    font-size: 0.82rem;
-    font-weight: $font-weight-regular;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    box-shadow: none;
+    @include gallery-button-primary($color-green-symbol, $color-green-symbol);
+    cursor: default;
     transform: translateX(50%);
 
     @include respond-to('tablet') {

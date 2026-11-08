@@ -3,22 +3,49 @@ import Layout from '../layouts/Layout.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import ImagePlaceholder from '../components/ImagePlaceholder.astro';
 
-const institutionalPartners = [
-  { id: "Partenaire.Image.3.1", name: "Partenaire.Nom.3.1 — Ministère de la Culture & Fonds de Création", role: "Soutien Institutionnel Majeur" },
-  { id: "Partenaire.Image.3.2", name: "Partenaire.Nom.3.2 — Musée d'Art Contemporain & Métahisme", role: "Partenaire de Diffusion Muséale" },
-  { id: "Partenaire.Image.3.3", name: "Partenaire.Nom.3.3 — Biennale Internationale des Arts Visuels", role: "Co-production & Itinérance" },
-];
-
-const galleryPartners = [
-  { id: "Partenaire.Image.3.4", name: "Partenaire.Nom.3.4 — Galerie Horizon Contemporain (Paris - Genève)", role: "Représentation Permanente" },
-  { id: "Partenaire.Image.3.5", name: "Partenaire.Nom.3.5 — Fondation d'Entreprise pour l'Art et la Pensée", role: "Mécénat Principal d'Acquisition" },
-  { id: "Partenaire.Image.3.6", name: "Partenaire.Nom.3.6 — Cercle des Amis de Patrick Laumond", role: "Association des Collectionneurs" },
-];
-
-const techPartners = [
-  { id: "Partenaire.Image.3.7", name: "Partenaire.Nom.3.7 — Infrastructure Cloud & Stockage HD (AWS S3)", role: "Diffusion Numérique Haute Fidélité" },
-  { id: "Partenaire.Image.3.8", name: "Partenaire.Nom.3.8 — Studio GigaPixel Numérisation d'Art", role: "Captation Haute Résolution" },
-  { id: "Partenaire.Image.3.9", name: "Partenaire.Nom.3.9 — Laboratoire d'Optique & Pigments Innovants", role: "Recherche Chromatique" },
+const partnerSections = [
+  {
+    titleId: "Titre.3.2",
+    title: "Institutions & Soutiens Publics",
+    textId: "Texte.3.2",
+    description:
+      "Texte.3.2 — Remerciements aux ministères, directions culturelles régionales et musées nationaux qui accueillent et favorisent la mise en valeur des toiles du Métahisme à travers leurs programmes d'expositions publiques.",
+    icon: "🏛",
+    altBg: false,
+    items: [
+      { id: "Partenaire.Image.3.1", name: "Partenaire.Nom.3.1 — Ministère de la Culture & Fonds de Création", role: "Soutien Institutionnel Majeur" },
+      { id: "Partenaire.Image.3.2", name: "Partenaire.Nom.3.2 — Musée d'Art Contemporain & Métahisme", role: "Partenaire de Diffusion Muséale" },
+      { id: "Partenaire.Image.3.3", name: "Partenaire.Nom.3.3 — Biennale Internationale des Arts Visuels", role: "Co-production & Itinérance" },
+    ],
+  },
+  {
+    titleId: "Titre.3.3",
+    title: "Galeries Associées & Mécènes",
+    textId: "Texte.3.3",
+    description:
+      "Texte.3.3 — Gratitude particulière aux collectionneurs donateurs et aux galeries d'art contemporain pour la mise à disposition des œuvres maîtresses et leur soutien constant à la cote artistique de Patrick Laumond.",
+    icon: "🎨",
+    altBg: true,
+    items: [
+      { id: "Partenaire.Image.3.4", name: "Partenaire.Nom.3.4 — Galerie Horizon Contemporain (Paris - Genève)", role: "Représentation Permanente" },
+      { id: "Partenaire.Image.3.5", name: "Partenaire.Nom.3.5 — Fondation d'Entreprise pour l'Art et la Pensée", role: "Mécénat Principal d'Acquisition" },
+      { id: "Partenaire.Image.3.6", name: "Partenaire.Nom.3.6 — Cercle des Amis de Patrick Laumond", role: "Association des Collectionneurs" },
+    ],
+  },
+  {
+    titleId: "Titre.3.4",
+    title: "Ingénierie & Partenaires Technologiques",
+    textId: "Texte.3.4",
+    description:
+      "Texte.3.4 — Remerciements aux équipes techniques pour le déploiement de la solution de distribution média haute performance AWS S3, la numérisation gigapixel et l'architecture web dédiée à cette vitrine d'exposition.",
+    icon: "⚡",
+    altBg: false,
+    items: [
+      { id: "Partenaire.Image.3.7", name: "Partenaire.Nom.3.7 — Infrastructure Cloud & Stockage HD (AWS S3)", role: "Diffusion Numérique Haute Fidélité" },
+      { id: "Partenaire.Image.3.8", name: "Partenaire.Nom.3.8 — Studio GigaPixel Numérisation d'Art", role: "Captation Haute Résolution" },
+      { id: "Partenaire.Image.3.9", name: "Partenaire.Nom.3.9 — Laboratoire d'Optique & Pigments Innovants", role: "Recherche Chromatique" },
+    ],
+  },
 ];
 ---
 
@@ -60,113 +87,41 @@ const techPartners = [
       </div>
     </header>
 
-    <!-- SECTION 1 : PARTENAIRES INSTITUTIONNELS -->
-    <section class="partner-group-section">
-      <div class="main-container">
-        <SectionHeader tag="h2" labelId="Titre.3.2">
-          Institutions & Soutiens Publics
-        </SectionHeader>
+    <!-- SECTIONS PARTENAIRES (INSTITUTIONNELS, GALERIES, TECHNOLOGIQUES) -->
+    {partnerSections.map((group) => (
+      <section class={`partner-group-section ${group.altBg ? 'partner-group-section--alt' : ''}`}>
+        <div class="main-container">
+          <SectionHeader tag="h2" labelId={group.titleId}>
+            {group.title}
+          </SectionHeader>
 
-        <div class="tag-row">
-          <span class="artist-tag">Texte.3.2</span>
-        </div>
-        <p class="section-description">
-          Texte.3.2 — Remerciements aux ministères, directions culturelles régionales et musées nationaux qui accueillent et favorisent la mise en valeur des toiles du Métahisme à travers leurs programmes d'expositions publiques.
-        </p>
+          <div class="tag-row">
+            <span class="artist-tag">{group.textId}</span>
+          </div>
+          <p class="section-description">{group.description}</p>
 
-        <div class="partners-grid">
-          {institutionalPartners.map((partner) => (
-            <div class="partner-card">
-              <div class="partner-card-media">
-                <div class="tag-row">
-                  <span class="artist-tag">{partner.id}</span>
+          <div class="partners-grid">
+            {group.items.map((partner) => (
+              <div class="partner-card">
+                <div class="partner-card-media">
+                  <div class="tag-row">
+                    <span class="artist-tag">{partner.id}</span>
+                  </div>
+                  <div class="partner-logo-frame">
+                    <div class="logo-symbol">{group.icon}</div>
+                    <span class="logo-placeholder-id">{partner.id}</span>
+                  </div>
                 </div>
-                <div class="partner-logo-frame">
-                  <div class="logo-symbol">🏛</div>
-                  <span class="logo-placeholder-id">{partner.id}</span>
-                </div>
-              </div>
-              <div class="partner-card-info">
-                <h4 class="partner-name">{partner.name}</h4>
-                <p class="partner-role">{partner.role}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 2 : GALERIES & MÉCÉNAT PRIVÉ -->
-    <section class="partner-group-section partner-group-section--alt">
-      <div class="main-container">
-        <SectionHeader tag="h2" labelId="Titre.3.3">
-          Galeries Associées & Mécènes
-        </SectionHeader>
-
-        <div class="tag-row">
-          <span class="artist-tag">Texte.3.3</span>
-        </div>
-        <p class="section-description">
-          Texte.3.3 — Gratitude particulière aux collectionneurs donateurs et aux galeries d'art contemporain pour la mise à disposition des œuvres maîtresses et leur soutien constant à la cote artistique de Patrick Laumond.
-        </p>
-
-        <div class="partners-grid">
-          {galleryPartners.map((partner) => (
-            <div class="partner-card">
-              <div class="partner-card-media">
-                <div class="tag-row">
-                  <span class="artist-tag">{partner.id}</span>
-                </div>
-                <div class="partner-logo-frame">
-                  <div class="logo-symbol">🎨</div>
-                  <span class="logo-placeholder-id">{partner.id}</span>
+                <div class="partner-card-info">
+                  <h4 class="partner-name">{partner.name}</h4>
+                  <p class="partner-role">{partner.role}</p>
                 </div>
               </div>
-              <div class="partner-card-info">
-                <h4 class="partner-name">{partner.name}</h4>
-                <p class="partner-role">{partner.role}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
-
-    <!-- SECTION 3 : PARTENAIRES TECHNOLOGIQUES & CLOUD -->
-    <section class="partner-group-section">
-      <div class="main-container">
-        <SectionHeader tag="h2" labelId="Titre.3.4">
-          Ingénierie & Partenaires Technologiques
-        </SectionHeader>
-
-        <div class="tag-row">
-          <span class="artist-tag">Texte.3.4</span>
-        </div>
-        <p class="section-description">
-          Texte.3.4 — Remerciements aux équipes techniques pour le déploiement de la solution de distribution média haute performance AWS S3, la numérisation gigapixel et l'architecture web dédiée à cette vitrine d'exposition.
-        </p>
-
-        <div class="partners-grid">
-          {techPartners.map((partner) => (
-            <div class="partner-card">
-              <div class="partner-card-media">
-                <div class="tag-row">
-                  <span class="artist-tag">{partner.id}</span>
-                </div>
-                <div class="partner-logo-frame">
-                  <div class="logo-symbol">⚡</div>
-                  <span class="logo-placeholder-id">{partner.id}</span>
-                </div>
-              </div>
-              <div class="partner-card-info">
-                <h4 class="partner-name">{partner.name}</h4>
-                <p class="partner-role">{partner.role}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
+      </section>
+    ))}
 
     <!-- SECTION 4 : CONTACT MÉCÉNAT & COLLABORATION -->
     <section class="partners-contact-section">
@@ -201,10 +156,6 @@ const techPartners = [
 
   .partners-page {
     background-color: $color-background;
-  }
-
-  .tag-row {
-    margin-bottom: 0.35rem;
   }
 
   // --- Hero Section ---
@@ -388,27 +339,9 @@ const techPartners = [
     }
 
     .btn-partner-contact {
-      display: inline-flex;
-      align-items: center;
-      background-color: $color-primary;
-      color: $color-white;
-      border: 1px solid $color-primary;
+      @include gallery-button-primary;
       padding: 0.85rem 2.2rem;
-      border-radius: 0;
       font-size: 0.85rem;
-      font-weight: $font-weight-regular;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      box-shadow: none;
-      transition: all $transition-fast;
-
-      &:hover {
-        background-color: $color-primary-dark;
-        border-color: $color-primary-dark;
-        color: $color-white;
-        transform: none;
-        box-shadow: none;
-      }
     }
   }
 </style>

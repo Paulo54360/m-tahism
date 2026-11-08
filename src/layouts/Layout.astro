@@ -87,7 +87,13 @@ const navItems = [
           </nav>
 
           <!-- Bouton Menu Mobile (Exact laumond.com) -->
-          <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Ouvrir le menu">
+          <button
+            class="mobile-menu-btn"
+            id="mobile-menu-btn"
+            aria-label="Ouvrir le menu"
+            aria-expanded="false"
+            aria-controls="main-nav"
+          >
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
@@ -133,8 +139,9 @@ const navItems = [
         const mainNav = document.getElementById('main-nav');
 
         mobileBtn?.addEventListener('click', () => {
-          mobileBtn.classList.toggle('active');
-          mainNav?.classList.toggle('navbar-nav-open');
+          const isOpen = mobileBtn.classList.toggle('active');
+          mainNav?.classList.toggle('navbar-nav-open', isOpen);
+          mobileBtn.setAttribute('aria-expanded', String(isOpen));
         });
 
         window.addEventListener('scroll', () => {
@@ -237,7 +244,8 @@ const navItems = [
     min-width: 220px;
 
     @include respond-to('tablet') {
-      display: none;
+      min-width: 140px;
+      max-width: 260px;
     }
   }
 

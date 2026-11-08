@@ -1,6 +1,7 @@
 ---
-import { getS3MediaUrl } from '../utils/s3';
+import { getS3MediaUrl, isExplicitS3Url } from '../utils/s3';
 import { artworksData } from '../data/artworks';
+import type { Artwork } from '../types/artwork';
 
 interface Props {
   id: string;
@@ -10,6 +11,12 @@ interface Props {
   artworkId?: string;
   s3Key?: string;
   src?: string;
+  title?: string;
+  year?: string;
+  dimensions?: string;
+  technique?: string;
+  description?: string;
+  tags?: string[];
 }
 
 const {
@@ -19,21 +26,62 @@ const {
   altText,
   artworkId,
   s3Key,
-  src
+  src,
+  title,
+  year,
+  dimensions,
+  technique,
+  description,
+  tags,
 } = Astro.props;
 
-// Résolution de l'œuvre associée dans le catalogue BDD
+// Résolution unique de l'œuvre associée dans le catalogue statique
 const matchedArtwork = artworksData.find(
   (a) => (artworkId && a.id === artworkId) || a.artistRef === id
 );
 
 // Source d'image prioritaire : src directe > URL S3 explicite (http/metahism) > imageUrl BDD > URL S3 résolue
-const isExplicitS3Url = s3Key && (s3Key.startsWith('http://') || s3Key.startsWith('https://') || s3Key.startsWith('metahism/'));
-const effectiveSrc = src || (isExplicitS3Url ? getS3MediaUrl(s3Key) : '') || (matchedArtwork?.imageUrl) || (s3Key ? getS3MediaUrl(s3Key) : (matchedArtwork?.s3Key ? getS3MediaUrl(matchedArtwork.s3Key) : ''));
-const effectiveS3Key = s3Key || matchedArtwork?.s3Key || '';
+const explicitS3 = isExplicitS3Url(s3Key);
+const effectiveS3Key = s3Key || matchedArtwork?.s3Key || `artworks/${id.toLowerCase().replace('.', '-')}.webp`;
+const effectiveSrc =
+  src ||
+  (explicitS3 && s3Key ? getS3MediaUrl(s3Key) : '') ||
+  matchedArtwork?.imageUrl ||
+  (s3Key ? getS3MediaUrl(s3Key) : matchedArtwork?.s3Key ? getS3MediaUrl(matchedArtwork.s3Key) : '');
+
+// Objet Artwork complet pré-résolu côté serveur pour la modale
+const resolvedArtwork: Artwork = matchedArtwork
+  ? {
+      ...matchedArtwork,
+      title: title || matchedArtwork.title,
+      year: year || matchedArtwork.year,
+      dimensions: dimensions || matchedArtwork.dimensions,
+      technique: technique || matchedArtwork.technique,
+      description: description || matchedArtwork.description,
+      s3Key: explicitS3 && s3Key ? s3Key : matchedArtwork.s3Key,
+      imageUrl: effectiveSrc || matchedArtwork.imageUrl,
+    }
+  : {
+      id: artworkId || id || 'artwork',
+      title: title || altText || `Œuvre de référence ${id}`,
+      year: year || '2024',
+      dimensions: dimensions || 'Format monumental variable',
+      technique: technique || 'Technique mixte Métahiste sur lin',
+      s3Key: effectiveS3Key,
+      imageUrl: effectiveSrc,
+      description:
+        description ||
+        caption ||
+        `Emplacement réservé pour l'œuvre ${id}. L'asset est relié au bucket AWS S3 plaumondpicture (eu-west-3).`,
+      tags: tags || ['métahisme', 'patrick laumond', 'exposition', 's3'],
+      artistRef: id || 'Image',
+    };
 ---
 
-<figure class="image-placeholder-card" data-artist-ref={id} data-artwork-id={artworkId || matchedArtwork?.id} data-s3-key={effectiveS3Key}>
+<figure
+  class="image-placeholder-card"
+  data-artwork={JSON.stringify(resolvedArtwork)}
+>
   <div
     class="image-frame"
     style={`aspect-ratio: ${aspectRatio};`}
@@ -56,11 +104,10 @@ const effectiveS3Key = s3Key || matchedArtwork?.s3Key || '';
     {effectiveSrc ? (
       <img
         src={effectiveSrc}
-        alt={altText || matchedArtwork?.title || id}
+        alt={altText || resolvedArtwork.title || id}
         class="real-artwork-image"
         loading="lazy"
         decoding="async"
-        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
       />
     ) : null}
 
@@ -87,53 +134,38 @@ const effectiveS3Key = s3Key || matchedArtwork?.s3Key || '';
 </figure>
 
 <script>
-  import { artworksData } from '../data/artworks';
+  document.querySelectorAll<HTMLElement>('.image-placeholder-card').forEach((card) => {
+    const frame = card.querySelector<HTMLElement>('.image-frame');
+    const img = card.querySelector<HTMLImageElement>('.real-artwork-image');
+    const fallback = card.querySelector<HTMLElement>('.frame-content');
 
-  // Permettre l'ouverture de la modale au clic sur n'importe quelle image ou placeholder
-  document.querySelectorAll('.image-placeholder-card').forEach((card) => {
-    const frame = card.querySelector('.image-frame');
-    const artistRef = card.getAttribute('data-artist-ref');
-    const artworkId = card.getAttribute('data-artwork-id');
-    const cardS3Key = card.getAttribute('data-s3-key');
+    // Bascule propre vers le placeholder graphique si l'image échoue au chargement
+    if (img && fallback) {
+      const showFallback = () => {
+        img.style.display = 'none';
+        fallback.style.display = 'flex';
+      };
+      img.addEventListener('error', showFallback);
+      if (img.complete && img.naturalWidth === 0) {
+        showFallback();
+      }
+    }
 
     const handleClick = () => {
-      // Recherche de l'œuvre associée dans la base
-      const matched = artworksData.find(
-        (a) => (artworkId && a.id === artworkId) || (artistRef && a.artistRef === artistRef)
-      );
-
-      if (matched) {
-        const isExplicitUrl = cardS3Key && (cardS3Key.startsWith('http://') || cardS3Key.startsWith('https://') || cardS3Key.startsWith('metahism/'));
-        const detail = isExplicitUrl
-          ? { ...matched, s3Key: cardS3Key, imageUrl: cardS3Key.startsWith('http') ? cardS3Key : matched.imageUrl }
-          : matched;
+      const raw = card.getAttribute('data-artwork');
+      if (!raw) return;
+      try {
+        const detail = JSON.parse(raw);
         window.dispatchEvent(new CustomEvent('open-artwork-modal', { detail }));
-      } else {
-        // Fallback avec les infos du tag et de S3
-        window.dispatchEvent(
-          new CustomEvent('open-artwork-modal', {
-            detail: {
-              id: artistRef || 'artwork',
-              title: `Œuvre de référence ${artistRef}`,
-              year: '2024',
-              dimensions: 'Format monumental variable',
-              technique: 'Technique mixte Métahiste sur lin',
-              s3Key: cardS3Key || `artworks/${artistRef?.toLowerCase().replace('.', '-')}.webp`,
-              imageUrl: '',
-              description: `Emplacement réservé pour l'œuvre ${artistRef}. L'asset est relié au bucket AWS S3 plaumondpicture (eu-west-3).`,
-              tags: ['métahisme', 'patrick laumond', 'exposition', 's3'],
-              artistRef: artistRef || 'Image'
-            }
-          })
-        );
+      } catch (err) {
+        console.error('[ImagePlaceholder] Données d’œuvre invalides :', err);
       }
     };
 
     frame?.addEventListener('click', handleClick);
-    frame?.addEventListener('keydown', (e: Event) => {
-      const ke = e as KeyboardEvent;
-      if (ke.key === 'Enter' || ke.key === ' ') {
-        ke.preventDefault();
+    frame?.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
         handleClick();
       }
     });

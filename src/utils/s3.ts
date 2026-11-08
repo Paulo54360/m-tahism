@@ -16,6 +16,18 @@ export function getS3BaseUrl(): string {
 }
 
 /**
+ * Vérifie si la clé S3 fournie est déjà une URL explicite ou un chemin du dossier metahism/
+ */
+export function isExplicitS3Url(s3Key?: string): boolean {
+  if (!s3Key) return false;
+  return (
+    s3Key.startsWith('http://') ||
+    s3Key.startsWith('https://') ||
+    s3Key.startsWith('metahism/')
+  );
+}
+
+/**
  * Résout la clé S3 relative en URL publique complète
  * @param s3Key Clé d'asset S3 (ex: 'artworks/le-grand-mikado-hd.webp')
  */
