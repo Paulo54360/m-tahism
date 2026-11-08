@@ -27,8 +27,9 @@ const matchedArtwork = artworksData.find(
   (a) => (artworkId && a.id === artworkId) || a.artistRef === id
 );
 
-// Source d'image prioritaire : src directe > imageUrl BDD > URL S3 résolue
-const effectiveSrc = src || (matchedArtwork?.imageUrl) || (s3Key ? getS3MediaUrl(s3Key) : (matchedArtwork?.s3Key ? getS3MediaUrl(matchedArtwork.s3Key) : ''));
+// Source d'image prioritaire : src directe > URL S3 explicite (http/metahism) > imageUrl BDD > URL S3 résolue
+const isExplicitS3Url = s3Key && (s3Key.startsWith('http://') || s3Key.startsWith('https://') || s3Key.startsWith('metahism/'));
+const effectiveSrc = src || (isExplicitS3Url ? getS3MediaUrl(s3Key) : '') || (matchedArtwork?.imageUrl) || (s3Key ? getS3MediaUrl(s3Key) : (matchedArtwork?.s3Key ? getS3MediaUrl(matchedArtwork.s3Key) : ''));
 const effectiveS3Key = s3Key || matchedArtwork?.s3Key || '';
 ---
 
@@ -102,7 +103,11 @@ const effectiveS3Key = s3Key || matchedArtwork?.s3Key || '';
       );
 
       if (matched) {
-        window.dispatchEvent(new CustomEvent('open-artwork-modal', { detail: matched }));
+        const isExplicitUrl = cardS3Key && (cardS3Key.startsWith('http://') || cardS3Key.startsWith('https://') || cardS3Key.startsWith('metahism/'));
+        const detail = isExplicitUrl
+          ? { ...matched, s3Key: cardS3Key, imageUrl: cardS3Key.startsWith('http') ? cardS3Key : matched.imageUrl }
+          : matched;
+        window.dispatchEvent(new CustomEvent('open-artwork-modal', { detail }));
       } else {
         // Fallback avec les infos du tag et de S3
         window.dispatchEvent(

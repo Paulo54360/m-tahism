@@ -2,79 +2,131 @@
 import Layout from '../layouts/Layout.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import ImagePlaceholder from '../components/ImagePlaceholder.astro';
+import { supabase } from '../db/supabase';
 
-// Définition des jalons de la frise chronologique avec liaisons S3
-const timelineSteps = [
+interface TimelineImageItem {
+  year: string;
+  imageId: string;
+  s3Key: string;
+  imageCaption: string;
+}
+
+interface TimelineCategoryGroup {
+  key: string;
+  label: string;
+  subtitle: string;
+  year: string;
+  categoryIds: number[];
+  items: TimelineImageItem[];
+}
+
+// Récupération dynamique depuis Supabase des œuvres "Le Grand Mikado de la pensée humaine"
+const { data: mikadoArtworks } = await supabase
+  .from('artworks')
+  .select('*')
+  .ilike('title', '%Mikado%')
+  .is('deleted_at', null)
+  .order('id', { ascending: true });
+
+function parseImageUrls(raw: unknown): string[] {
+  if (!raw) return [];
+  if (Array.isArray(raw)) return raw.filter(Boolean);
+  if (typeof raw === 'string') {
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed.filter(Boolean) : [raw];
+    } catch {
+      return [raw];
+    }
+  }
+  return [];
+}
+
+// Définition des 4 grandes catégories dans l'ordre chronologique de création
+const categoryGroups: TimelineCategoryGroup[] = [
   {
-    period: "Phase 01 — Genèse",
-    titleId: "Titre.1.3",
-    titleDefault: "L'Émergence du Métahisme & Premières Toiles",
-    textId: "Texte.1.2",
-    textContent: "Texte.1.2 — Exploration des structures fractales et des premières intuitions du Métahisme. Naissance de la grille géométrique et confrontation de la matière brute avec la dimension spirituelle.",
-    imageId: "Image.1.2",
-    s3Key: "artworks/genese-metahiste-hd.webp",
-    imageCaption: "Image.1.2 — Œuvre fondatrice de la première période, technique mixte sur lin.",
-    artworkYear: "2018 - 2020",
+    key: 'dessins',
+    label: 'Les Dessins',
+    subtitle: "Réflexion initiale née de l'imagination de Patrick Laumond",
+    year: '2023',
+    categoryIds: [12, 15],
+    items: [],
   },
   {
-    period: "Phase 02 — Déploiement",
-    titleId: "Titre.1.4",
-    titleDefault: "Déstructuration & Métamorphose des Symboles",
-    textId: "Texte.1.3",
-    textContent: "Texte.1.3 — Période charnière marquant l'introduction des lignes de tension dynamiques. L'espace pictural s'ouvre sur une cartographie mentale complexe défiant la perspective conventionnelle.",
-    imageId: "Image.1.3",
-    s3Key: "artworks/interferences-fractales-4-hd.webp",
-    imageCaption: "Image.1.3 — Vue de détail sur les entrelacs chromatiques et la texture pigmentaire.",
-    artworkYear: "2021 - 2023",
+    key: 'transcriptions',
+    label: 'Les Transcriptions',
+    subtitle: "Définir l'œuvre dans l'espace",
+    year: '2023',
+    categoryIds: [9],
+    items: [
+      {
+        year: '2023',
+        imageId: 'Image.1.2',
+        s3Key: 'https://plaumondpicture.s3.eu-west-3.amazonaws.com/metahism/Le+grand+Mikado+de+la+pensee+humaine+-+Transcription+.+Vue+de+dessus.jpg',
+        imageCaption: 'Première transcription du grand Mikado de la pensée humaine - vue du dessus.',
+      },
+    ],
   },
   {
-    period: "Phase 03 — Climax",
-    titleId: "Titre.1.5",
-    titleDefault: "Le Grand Mikado de la Pensée Humaine",
-    textId: "Texte.1.4",
-    textContent: "Texte.1.4 — Synthèse monumentale où convergent des centaines de trajectoires convergentes et divergentes. L'œuvre maîtresse devient le miroir des interactions cognitives et sociétales de notre ère.",
-    imageId: "Image.1.4",
-    s3Key: "artworks/le-grand-mikado-de-la-pensee-humaine-hd.webp",
-    imageCaption: "Image.1.4 — Panorama haute définition du Grand Mikado, format monumental.",
-    artworkYear: "2024 - 2025",
+    key: 'archetypes',
+    label: 'Les Archétypes',
+    subtitle: "Prototype de l'œuvre finale",
+    year: '2024',
+    categoryIds: [10, 13],
+    items: [],
   },
   {
-    period: "Phase 04 — Horizons",
-    titleId: "Titre.1.6",
-    titleDefault: "Résonances Quantiques & Nouvelles Écritures",
-    textId: "Texte.1.5",
-    textContent: "Texte.1.5 — Recherches contemporaines intégrant la réfraction lumineuse, les encres métahistes et l'interaction avec le spectateur dans un espace muséal immersif.",
-    imageId: "Image.1.5",
-    s3Key: "artworks/equilibre-precaire-7-hd.webp",
-    imageCaption: "Image.1.5 — Prototype expérimental de la nouvelle série en cours d'achèvement.",
-    artworkYear: "2026 - Présent",
+    key: 'deploiements',
+    label: 'Le Déploiement',
+    subtitle: "Mise en place de l'œuvre",
+    year: '2025',
+    categoryIds: [11, 14],
+    items: [],
   },
 ];
+
+// Regroupement des images issues de la base Supabase par catégorie
+let dynamicIndex = 3;
+for (const artwork of mikadoArtworks || []) {
+  const urls = parseImageUrls(artwork.image_urls);
+  const group = categoryGroups.find((g) => g.categoryIds.includes(Number(artwork.category_id)));
+  if (!group || urls.length === 0) continue;
+
+  const createdYear = artwork.created_at ? String(new Date(artwork.created_at).getFullYear()) : group.year;
+  for (const url of urls) {
+    // Éviter les doublons si l'URL est déjà présente
+    if (group.items.some((it) => it.s3Key === url)) continue;
+    group.items.push({
+      year: createdYear,
+      imageId: `Image.1.${dynamicIndex++}`,
+      s3Key: url,
+      imageCaption: artwork.description
+        ? `${artwork.title} — ${artwork.description}`
+        : artwork.title,
+    });
+  }
+}
+
+const activeCategoryGroups = categoryGroups.filter((g) => g.items.length > 0);
 ---
 
-<Layout title="Frise Chronologique — Patrick Laumond" currentPath="/">
+<Layout title="Chronologie — Patrick Laumond" currentPath="/">
   <!-- HERO SECTION INSPIRÉE DE LA HOMEPAGE LAUMOND.COM -->
   <section class="hero-section">
     <div class="main-container hero-container">
       <div class="hero-text-block">
-        <div class="tag-row">
-          <span class="artist-tag">Titre.1.1</span>
-        </div>
         <h1 class="hero-main-title">
           Patrick Laumond
-          <span class="hero-sub-title">Frise Chronologique de l'Œuvre</span>
+          <span class="hero-sub-title">Chronologie de l'Œuvre</span>
         </h1>
 
-        <div class="tag-row">
-          <span class="artist-tag">Texte.1.1</span>
-        </div>
         <p class="hero-lead-text">
-          Texte.1.1 — Le parcours artistique de Patrick Laumond se déploie à travers le Métahisme, un courant pictural et conceptuel interrogeant la structure sous-jacente de la conscience humaine. Cette frise verticale invite à traverser les cycles créatifs qui ont jalonné la genèse du Grand Mikado.
+          Cette chronologie retrace le cheminement de l'oeuvre ≪ Le grand Mikado de la pensée humaine ≫, partant de l'idée première jusqu'à sa réalisation : <strong>les dessins</strong>, réflexion initiale née de l'imagination de Patrick Laumond ; <strong>les transcriptions</strong>, qui viennent définir l'œuvre dans l'espace ; <strong>les archétypes</strong>, conçus comme le prototype de l'œuvre finale; et enfin <strong>le déploiement</strong>, marquant la mise en place de l'œuvre in situ.
         </p>
 
         <div class="hero-cta-group">
           <a href="#timeline" class="btn-primary-action">
-            Explorer la Frise
+            Explorer la Chronologie
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
           </a>
           <a href="/interview" class="btn-secondary-action">
@@ -89,7 +141,7 @@ const timelineSteps = [
         </div>
         <ImagePlaceholder
           id="Image.1.1"
-          s3Key="artworks/le-grand-mikado-de-la-pensee-humaine-hd.webp"
+          s3Key="https://plaumondpicture.s3.eu-west-3.amazonaws.com/metahism/laumomd.jpg"
           aspectRatio="4 / 3"
           altText="Image.1.1 — Vue panoramique d'introduction ou vidéo 360°"
           caption="Image.1.1 — Œuvre signature inaugurale ou visualiseur immersif."
@@ -103,84 +155,45 @@ const timelineSteps = [
     <div class="main-container">
       <div class="section-intro">
         <SectionHeader tag="h2" labelId="Titre.1.2" accent="green">
-          Frise Chronologique
+        Chronologie
         </SectionHeader>
       </div>
 
-      <!-- Conteneur Frise Verticale avec Ligne Axe -->
+      <!-- Conteneur Chronologie Verticale regroupée par Catégorie -->
       <div class="vertical-timeline">
         <div class="timeline-axis-line"></div>
 
-        {timelineSteps.map((step, index) => {
-          const isEven = index % 2 === 1;
-          return (
-            <div class={`timeline-item ${isEven ? 'timeline-item--reversed' : ''}`}>
-              <!-- Nœud jalon sur la ligne centrale -->
-              <div class="timeline-node">
-                <span class="node-number">0{index + 1}</span>
-                <span class="node-dot"></span>
-              </div>
-
-              <!-- Bloc Contenu Texte -->
-              <div class="timeline-content-card">
-                <div class="card-header-tags">
-                  <span class="timeline-period-badge">{step.period}</span>
-                  <span class="timeline-year-text">{step.artworkYear}</span>
-                </div>
-
-                <div class="tag-row">
-                  <span class="artist-tag">{step.titleId}</span>
-                </div>
-                <h3 class="timeline-step-title">{step.titleDefault}</h3>
-
-                <div class="tag-row">
-                  <span class="artist-tag">{step.textId}</span>
-                </div>
-                <p class="timeline-step-text">{step.textContent}</p>
-              </div>
-
-              <!-- Bloc Image Associée -->
-              <div class="timeline-media-card">
-                <div class="tag-row">
-                  <span class="artist-tag">{step.imageId}</span>
-                </div>
-                <ImagePlaceholder
-                  id={step.imageId}
-                  s3Key={step.s3Key}
-                  aspectRatio="16 / 10"
-                  altText={step.imageId}
-                  caption={step.imageCaption}
-                />
-              </div>
+        {activeCategoryGroups.map((group) => (
+          <div class="timeline-category-group">
+            <!-- Titre de catégorie aligné à droite (visuel identique au bouton principal) -->
+            <div class="timeline-category-header">
+              <span class="node-category-badge">{group.label}</span>
             </div>
-          );
-        })}
-      </div>
 
-      <!-- Conclusion de la Frise -->
-      <div class="timeline-conclusion-card">
-        <div class="tag-row">
-          <span class="artist-tag">Titre.1.7</span>
-        </div>
-        <h3 class="conclusion-title">Perspectives & Prochaines Expositions</h3>
+            <!-- Nœud de l'année centré sur l'axe chronologique -->
+            <div class="timeline-node timeline-node--category">
+              <span class="node-number">{group.year}</span>
+              <span class="node-dot"></span>
+            </div>
 
-        <div class="tag-row">
-          <span class="artist-tag">Texte.1.6</span>
-        </div>
-        <p class="conclusion-text">
-          Texte.1.6 — Le corpus des œuvres du Métahisme poursuit sa diffusion internationale. Pour approfondir les fondements philosophiques et formels de cette trajectoire, accédez à l'interview rétrospective de Patrick Laumond consacrée au chef-d'œuvre du Grand Mikado.
-        </p>
-
-        <div class="tag-row">
-          <span class="artist-tag">Image.1.6</span>
-        </div>
-        <ImagePlaceholder
-          id="Image.1.6"
-          s3Key="artworks/totem-du-reel-hd.webp"
-          aspectRatio="21 / 9"
-          altText="Image.1.6 — Vue scénographique finale d'ensemble"
-          caption="Image.1.6 — Scénographie de l'espace d'exposition métahiste."
-        />
+            <div class="timeline-category-items">
+              {group.items.map((step) => (
+                <div class="timeline-item">
+                  <!-- Unique Bloc Image + Légende symbolisant l'étape -->
+                  <div class="timeline-media-card">
+                    <ImagePlaceholder
+                      id={step.imageId}
+                      s3Key={step.s3Key}
+                      aspectRatio="16 / 10"
+                      altText={step.imageCaption}
+                      caption={step.imageCaption}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   </section>
@@ -338,6 +351,7 @@ const timelineSteps = [
   .vertical-timeline {
     position: relative;
     width: 100%;
+    max-width: 860px;
     margin: 0 auto;
     padding: $spacing-xl 0;
   }
@@ -351,64 +365,80 @@ const timelineSteps = [
     width: 2px;
     background-color: $color-border;
     transform: translateX(-50%);
+  }
 
-    @include respond-to('tablet') {
-      left: 20px;
+  .timeline-category-group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-lg;
+    margin-bottom: clamp(4rem, 7vw, 6rem);
+
+    &:last-child {
+      margin-bottom: 0;
     }
+  }
+
+  .timeline-category-items {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2.5rem, 4vw, 3.5rem);
   }
 
   .timeline-item {
     position: relative;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(2rem, 5vw, 5rem);
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    margin-bottom: clamp(3rem, 6vw, 6rem);
+    width: 100%;
+  }
+
+  .timeline-category-header {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .node-category-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: $color-green-symbol;
+    color: $color-white;
+    padding: 0.8rem 1.8rem;
+    border: 1px solid $color-green-symbol;
+    border-radius: 0;
+    font-size: 0.82rem;
+    font-weight: $font-weight-regular;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    box-shadow: none;
+    transform: translateX(50%);
 
     @include respond-to('tablet') {
-      grid-template-columns: 1fr;
-      padding-left: 50px;
-      gap: $spacing-lg;
-    }
-
-    &--reversed {
-      direction: rtl;
-
-      @include respond-to('tablet') {
-        direction: ltr;
-      }
-
-      .timeline-content-card,
-      .timeline-media-card {
-        direction: ltr;
-      }
+      transform: none;
     }
   }
 
   .timeline-node {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: relative;
     z-index: 10;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.35rem;
     pointer-events: none;
 
-    @include respond-to('tablet') {
-      left: 20px;
-      top: 2rem;
-      transform: translateX(-50%);
-    }
-
     .node-number {
-      font-size: 0.72rem;
+      font-size: 0.75rem;
       font-weight: $font-weight-bold;
       color: $color-green-symbol;
       background: $color-white;
-      padding: 0.15rem 0.45rem;
+      padding: 0.2rem 0.55rem;
       border-radius: 0;
       border: 1px solid $color-border;
       box-shadow: none;
@@ -424,87 +454,17 @@ const timelineSteps = [
     }
   }
 
-  .timeline-content-card {
+  .timeline-media-card {
+    position: relative;
+    z-index: 5;
+    width: 100%;
     background-color: $color-white;
     border: 1px solid $color-border;
-    border-radius: 0;
-    padding: clamp(1.5rem, 3vw, 2.5rem);
-    box-shadow: none;
+    padding: clamp(1rem, 2.5vw, 1.75rem);
     transition: border-color $transition-fast;
 
     &:hover {
-      box-shadow: none;
       border-color: $color-green-symbol;
-    }
-
-    .card-header-tags {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: $spacing-sm;
-      margin-bottom: $spacing-md;
-      padding-bottom: $spacing-xs;
-      border-bottom: 1px solid $color-border-light;
-    }
-
-    .timeline-period-badge {
-      font-size: 0.78rem;
-      font-weight: $font-weight-semibold;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: $color-green-symbol;
-    }
-
-    .timeline-year-text {
-      font-size: 0.78rem;
-      font-weight: $font-weight-regular;
-      color: $color-muted;
-    }
-
-    .timeline-step-title {
-      font-size: clamp(1.2rem, 2vw, 1.6rem);
-      font-weight: $font-weight-regular;
-      color: $color-text;
-      line-height: 1.35;
-      margin-bottom: $spacing-md;
-    }
-
-    .timeline-step-text {
-      font-size: 0.95rem;
-      color: $color-text;
-      line-height: 1.65;
-      margin: 0;
-    }
-  }
-
-  .timeline-media-card {
-    width: 100%;
-  }
-
-  // Conclusion card
-  .timeline-conclusion-card {
-    background-color: $color-white;
-    border: 1px solid $color-border;
-    border-radius: 0;
-    padding: clamp(2rem, 4vw, 3.5rem);
-    box-shadow: none;
-    margin-top: $spacing-3xl;
-
-    .conclusion-title {
-      font-size: clamp(1.4rem, 2.5vw, 2rem);
-      font-weight: $font-weight-light;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: $color-text;
-      margin-bottom: $spacing-md;
-    }
-
-    .conclusion-text {
-      font-size: 1rem;
-      line-height: 1.7;
-      color: $color-text;
-      max-width: 900px;
-      margin-bottom: $spacing-xl;
     }
   }
 </style>

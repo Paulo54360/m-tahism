@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 4321
 
 # Commande de démarrage en développement avec hot-reload
-CMD ["npm", "run", "dev", "--", "--host"]
+CMD ["npm", "run", "dev", "--", "--host", "--force"]
