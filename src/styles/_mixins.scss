@@ -39,7 +39,7 @@
 // --- En-tête de section avec filet rouge Laumond (laumond.com) ---
 @mixin section-header($animate-on-hover: true) {
   text-align: left;
-  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  margin-bottom: 4rem;
   margin-top: 0;
   display: inline-flex;
   flex-direction: column;
@@ -48,11 +48,19 @@
   width: max-content;
   max-width: 100%;
 
+  @include respond-to('tablet') {
+    margin-bottom: 1.5rem;
+  }
+
+  @include respond-to('mobile') {
+    margin-bottom: 1.2rem;
+  }
+
   .section-title {
     align-items: baseline;
     color: $color-text-light;
     display: inline-block;
-    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-size: 2.2rem;
     font-weight: 300;
     letter-spacing: 0.22em;
     line-height: 1.2;
@@ -60,6 +68,18 @@
     padding: 0;
     text-transform: uppercase;
     transition: color 0.3s ease;
+
+    @include respond-to('tablet') {
+      font-size: 1.6rem;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.6rem;
+    }
+
+    @include respond-to('mobile') {
+      font-size: 1.4rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
   }
 
   .section-divider {
@@ -71,6 +91,16 @@
     transform-origin: left center;
     border-radius: 0;
     transition: transform 0.3s ease;
+
+    @include respond-to('tablet') {
+      width: 40px;
+      height: 2px;
+    }
+
+    @include respond-to('mobile') {
+      width: 35px;
+      height: 2px;
+    }
   }
 
   @if $animate-on-hover {
@@ -109,16 +139,16 @@
   }
 }
 
-// --- Thème d'accentuation Vert Symbole (laumond.com) ---
+// --- Thème d'accentuation Marque / Galerie (laumond.com) ---
 @mixin green-accent-scope {
-  --card-hover-border: #{$color-green-symbol};
-  --badge-accent-color: #{$color-green-symbol};
-  --accent-divider: #{$color-green-symbol};
+  --card-hover-border: #{$color-primary};
+  --badge-accent-color: #{$color-primary};
+  --accent-divider: #{$color-primary};
 
   .artist-tag {
-    background-color: rgba($color-green-symbol, 0.06);
-    border-color: rgba($color-green-symbol, 0.25);
-    color: $color-green-symbol;
+    background-color: rgba($color-primary, 0.06);
+    border-color: rgba($color-primary, 0.25);
+    color: $color-primary;
   }
 }
 

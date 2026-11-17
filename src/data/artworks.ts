@@ -19,30 +19,43 @@ export const artworksData: Artwork[] = [
     highlight: "Œuvre maîtresse sélectionnée pour l'exposition internationale."
   },
   {
-    id: "genese-metahiste",
-    title: "Le grand Mikado de la pensée humaine",
+    id: "mikado-dessin",
+    title: "Le grand Mikado de la pensée humaine (Dessin)",
     year: "2023",
-    dimensions: "140 × 100 cm",
-    technique: "Huile et pigments naturels sur bois marouflé",
-    s3Key: "metahism/Le+grand+Mikado+de+la+pensee+humaine+-+Transcription+.+Vue+de+dessus.jpg",
-    imageUrl: "https://plaumondpicture.s3.eu-west-3.amazonaws.com/metahism/Le+grand+Mikado+de+la+pensee+humaine+-+Transcription+.+Vue+de+dessus.jpg",
-    description: "Émergence de l'œuvre. Première œuvre où s'affirme le manifeste du Métahisme. Passage de l'abstraction lyrique vers la rigueur mathématique et vibratoire des lignes directionnelles.",
-    tags: ["genese", "eveil", "origine", "manifeste", "histoire", "fondation"],
+    dimensions: "Format dessin sur papier d'art",
+    technique: "Dessin préparatoire, encre et pigments sur papier d'art",
+    s3Key: "Drawings/le-grand-mikado-de-la-pensee-humaine.webp",
+    imageUrl: "https://plaumondpicture.s3.eu-west-3.amazonaws.com/Drawings/le-grand-mikado-de-la-pensee-humaine.webp",
+    description: "Réflexion initiale née de l'imagination de Patrick Laumond. Première ébauche graphique structurant les axes et tensions du Grand Mikado.",
+    tags: ["mikado", "dessin", "pensee humaine", "metahisme", "esquisse"],
     artistRef: "Image.1.2",
-    highlight: "Point de départ historique du mouvement."
+    highlight: "Réflexion initiale née de l'imagination de Patrick Laumond."
   },
   {
-    id: "mikado-transcription-13",
+    id: "mikado-transcription-1",
     title: "Le Grand Mikado De La Pensée Humaine (Transcription)",
     year: "2023",
     dimensions: "Format monumental",
     technique: "Transcription — Définir l'œuvre dans l'espace",
-    s3Key: "Transcriptions/13/09.jpg",
-    imageUrl: "https://plaumondpicture.s3.eu-west-3.amazonaws.com/Transcriptions/13/09.jpg",
-    description: "Vue de l'œuvre Le Grand Mikado De La Pensée Humaine (Catégorie : Transcriptions).",
+    s3Key: "Transcriptions/le-grand-mikado-de-la-pensee-humaine.webp",
+    imageUrl: "https://plaumondpicture.s3.eu-west-3.amazonaws.com/Transcriptions/le-grand-mikado-de-la-pensee-humaine.webp",
+    description: "Définition de l'œuvre dans l'espace. Vue de face de la première transcription monumentale du Grand Mikado.",
     tags: ["mikado", "transcription", "pensée humaine", "espace", "métahisme"],
     artistRef: "Image.1.3",
-    highlight: "Transcription spatiale de l'œuvre."
+    highlight: "Définir l'œuvre dans l'espace."
+  },
+  {
+    id: "mikado-transcription-2",
+    title: "Le Grand Mikado De La Pensée Humaine (Transcription 2)",
+    year: "2023",
+    dimensions: "Format monumental",
+    technique: "Transcription — Définir l'œuvre dans l'espace (Vue d'ensemble)",
+    s3Key: "Transcriptions/le-grand-mikado-de-la-pensee-humaine-2.webp",
+    imageUrl: "https://plaumondpicture.s3.eu-west-3.amazonaws.com/Transcriptions/le-grand-mikado-de-la-pensee-humaine-2.webp",
+    description: "Seconde transcription définissant l'organisation spatiale et chromatique tridimensionnelle.",
+    tags: ["mikado", "transcription", "pensée humaine", "espace", "métahisme"],
+    artistRef: "Image.1.4",
+    highlight: "Seconde transcription spatiale."
   },
   {
     id: "mikado-archetype-1",
@@ -50,12 +63,12 @@ export const artworksData: Artwork[] = [
     year: "2024",
     dimensions: "Prototype monumental",
     technique: "Archétype — Prototype de l'œuvre finale",
-    s3Key: "Archetypes/02/09.jpg",
-    imageUrl: "https://plaumondpicture.s3.eu-west-3.amazonaws.com/Archetypes/02/09.jpg",
-    description: "Prototype et structuration tridimensionnelle du Grand Mikado de la pensée humaine (Catégorie : Archétypes).",
+    s3Key: "Archetypes/le-grand-mikado-de-la-pensee.webp",
+    imageUrl: "https://plaumondpicture.s3.eu-west-3.amazonaws.com/Archetypes/le-grand-mikado-de-la-pensee.webp",
+    description: "Prototype tridimensionnel grandeur nature matérialisant l'entrecroisement des vecteurs de pensée.",
     tags: ["mikado", "archetype", "prototype", "pensée", "métahisme"],
-    artistRef: "Image.1.4",
-    highlight: "Premier archétype de l'œuvre."
+    artistRef: "Image.1.5",
+    highlight: "Premier archétype de l'œuvre finale."
   },
   {
     id: "mikado-archetype-2",
@@ -63,12 +76,12 @@ export const artworksData: Artwork[] = [
     year: "2024",
     dimensions: "Prototype monumental",
     technique: "Archétype — Prototype de l'œuvre finale",
-    s3Key: "Archetypes/02/10.jpg",
-    imageUrl: "https://plaumondpicture.s3.eu-west-3.amazonaws.com/Archetypes/02/10.jpg",
-    description: "Seconde vue de l'archétype du Grand Mikado de la pensée humaine (Catégorie : Archétypes).",
+    s3Key: "Archetypes/le-grand-mikado-de-la-pensee-2.webp",
+    imageUrl: "https://plaumondpicture.s3.eu-west-3.amazonaws.com/Archetypes/le-grand-mikado-de-la-pensee-2.webp",
+    description: "Seconde vue de l'archétype du Grand Mikado de la pensée humaine avant déploiement.",
     tags: ["mikado", "archetype", "prototype", "pensée", "métahisme"],
-    artistRef: "Image.1.5",
-    highlight: "Second archétype de l'œuvre."
+    artistRef: "Image.1.6",
+    highlight: "Second archétype de l'œuvre finale."
   },
   {
     id: "totem-du-reel",

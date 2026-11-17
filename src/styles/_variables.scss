@@ -3,10 +3,11 @@
 // Direction Artistique : Galerie d'Art Contemporain / Angles Vifs
 // ==========================================
 
-// --- Palette de la Marque (Brand Palette) ---
-$color-primary: #cc0000;
-$color-primary-dark: #a20101;
-$color-primary-rgb: 204, 0, 0;
+// --- Palette de la Marque (Brand Palette - Vert Métahisme) ---
+$color-primary: #094629;
+$color-primary-dark: #06311d;
+$color-primary-light: #0d5f38;
+$color-primary-rgb: 9, 70, 41;
 
 // --- Couleur Bouton Symbole (*) laumond.com ---
 $color-green-symbol: #094629;
@@ -37,9 +38,9 @@ $color-border-strong: #d5d5d5;
 $color-border-light: #ededed;
 
 // Repères / Tags artistes
-$color-tag-bg: #fff5f5;
-$color-tag-border: #fca5a5;
-$color-tag-text: #cc0000;
+$color-tag-bg: #f4f8f5;
+$color-tag-border: #a3c9b4;
+$color-tag-text: #094629;
 
 // --- Typographie ---
 $font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;

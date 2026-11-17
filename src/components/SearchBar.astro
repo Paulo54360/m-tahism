@@ -336,8 +336,8 @@
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
     &:focus-within {
-      border-color: $color-green-symbol;
-      box-shadow: 0 0 0 1px rgba(9, 70, 41, 0.2);
+      border-color: $color-primary;
+      box-shadow: 0 0 0 1px rgba($color-primary, 0.2);
     }
 
     .search-input {
@@ -368,7 +368,7 @@
       align-items: center;
 
       &:hover {
-        color: $color-green-symbol;
+        color: $color-primary;
       }
     }
 
@@ -402,8 +402,8 @@
       flex-shrink: 0;
 
       &:hover {
-        background-color: rgba(9, 70, 41, 0.06);
-        color: $color-green-symbol;
+        background-color: rgba($color-primary, 0.05);
+        color: $color-primary;
       }
     }
   }
@@ -455,7 +455,7 @@
 
     .dropdown-count {
       font-size: 0.72rem;
-      color: $color-green-symbol;
+      color: $color-primary;
       font-weight: $font-weight-medium;
       letter-spacing: 0.04em;
     }
@@ -484,14 +484,14 @@
 
     &:hover,
     &.result-item--selected {
-      background-color: rgba(9, 70, 41, 0.04);
+      background-color: rgba($color-primary, 0.04);
 
       .result-title {
-        color: $color-green-symbol;
+        color: $color-primary;
       }
 
       .result-arrow {
-        color: $color-green-symbol;
+        color: $color-primary;
         transform: translateX(3px);
       }
     }
@@ -509,7 +509,7 @@
     flex-shrink: 0;
 
     .thumb-icon {
-      color: $color-green-symbol;
+      color: $color-primary;
       font-size: 0.85rem;
     }
   }
@@ -597,13 +597,13 @@
       border-radius: 0;
       font-size: 0.72rem;
       padding: 0.25rem 0.65rem;
-      color: $color-green-symbol;
+      color: $color-primary;
       cursor: pointer;
       transition: all $transition-fast;
 
       &:hover {
-        background: rgba(9, 70, 41, 0.06);
-        border-color: $color-green-symbol;
+        background: rgba($color-primary, 0.06);
+        border-color: $color-primary;
       }
     }
   }

@@ -9,6 +9,7 @@ interface TimelineImageItem {
   year: string;
   imageId: string;
   s3Key: string;
+  src?: string;
   imageCaption: string;
   title?: string;
   dimensions?: string;
@@ -23,6 +24,7 @@ interface TimelineCategoryGroup {
   year: string;
   categoryIds: number[];
   items: TimelineImageItem[];
+  isCountdown?: boolean;
 }
 
 // Récupération dynamique depuis Supabase des œuvres "Le Grand Mikado de la pensée humaine"
@@ -42,7 +44,7 @@ if (supabase) {
   }
 }
 
-// Définition des 4 grandes catégories dans l'ordre chronologique de création
+// Définition des 4 grandes étapes dans l'ordre chronologique exact de création
 const categoryGroups: TimelineCategoryGroup[] = [
   {
     key: 'dessins',
@@ -50,20 +52,48 @@ const categoryGroups: TimelineCategoryGroup[] = [
     subtitle: "Réflexion initiale née de l'imagination de Patrick Laumond",
     year: '2023',
     categoryIds: [12, 15],
-    items: [],
+    items: [
+      {
+        year: '2023',
+        imageId: 'Image.1.2',
+        src: '/images/mikado/dessin.webp',
+        s3Key: 'Drawings/le-grand-mikado-de-la-pensee-humaine.webp',
+        title: 'Le grand Mikado de la pensée humaine (Dessin)',
+        dimensions: "Dessin sur papier d'art",
+        technique: "Dessin préparatoire, encre et pigments sur papier d'art",
+        description: "Réflexion initiale née de l'imagination de Patrick Laumond. Première esquisse graphique des lignes et des tensions de pensée.",
+        imageCaption: 'Le grand Mikado de la pensée humaine — Dessin préparatoire.',
+      },
+    ],
   },
   {
     key: 'transcriptions',
-    label: 'Les Transcriptions',
+    label: 'La Transcription',
     subtitle: "Définir l'œuvre dans l'espace",
     year: '2023',
     categoryIds: [9],
     items: [
       {
         year: '2023',
-        imageId: 'Image.1.2',
-        s3Key: 'https://plaumondpicture.s3.eu-west-3.amazonaws.com/metahism/Le+grand+Mikado+de+la+pensee+humaine+-+Transcription+.+Vue+de+dessus.jpg',
-        imageCaption: 'Première transcription du grand Mikado de la pensée humaine - vue du dessus.',
+        imageId: 'Image.1.3',
+        src: '/images/mikado/transcription-1.webp',
+        s3Key: 'Transcriptions/le-grand-mikado-de-la-pensee-humaine.webp',
+        title: 'Le Grand Mikado De La Pensée Humaine (Transcription)',
+        dimensions: 'Format monumental',
+        technique: "Transcription — Définir l'œuvre dans l'espace",
+        description: "Définition de l'œuvre dans l'espace. Vue frontale de la première transcription monumentale.",
+        imageCaption: 'Le Grand Mikado De La Pensée Humaine — Transcription frontale.',
+      },
+      {
+        year: '2023',
+        imageId: 'Image.1.4',
+        src: '/images/mikado/transcription-2.webp',
+        s3Key: 'Transcriptions/le-grand-mikado-de-la-pensee-humaine-2.webp',
+        title: 'Le Grand Mikado De La Pensée Humaine (Transcription 2)',
+        dimensions: 'Format monumental',
+        technique: "Transcription — Définir l'œuvre dans l'espace (Vue d'ensemble)",
+        description: "Seconde transcription définissant l'organisation spatiale et chromatique tridimensionnelle.",
+        imageCaption: "Le Grand Mikado De La Pensée Humaine — Transcription dans l'espace (Vue 2).",
       },
     ],
   },
@@ -73,36 +103,59 @@ const categoryGroups: TimelineCategoryGroup[] = [
     subtitle: "Prototype de l'œuvre finale",
     year: '2024',
     categoryIds: [10, 13],
-    items: [],
+    items: [
+      {
+        year: '2024',
+        imageId: 'Image.1.5',
+        src: '/images/mikado/archetype-1.webp',
+        s3Key: 'Archetypes/le-grand-mikado-de-la-pensee.webp',
+        title: 'Le Grand Mikado De La Pensée (Archétype 1)',
+        dimensions: 'Prototype monumental',
+        technique: "Archétype — Prototype de l'œuvre finale",
+        description: "Prototype tridimensionnel grandeur nature matérialisant l'entrecroisement des vecteurs de pensée.",
+        imageCaption: 'Le Grand Mikado De La Pensée — Premier archétype grandeur nature.',
+      },
+      {
+        year: '2024',
+        imageId: 'Image.1.6',
+        src: '/images/mikado/archetype-2.webp',
+        s3Key: 'Archetypes/le-grand-mikado-de-la-pensee-2.webp',
+        title: 'Le Grand Mikado De La Pensée (Archétype 2)',
+        dimensions: 'Prototype monumental',
+        technique: "Archétype — Prototype de l'œuvre finale (Seconde vue)",
+        description: "Deuxième étude de prototype archétypal avant le déploiement de l'œuvre finale.",
+        imageCaption: 'Le Grand Mikado De La Pensée — Second archétype grandeur nature.',
+      },
+    ],
   },
   {
     key: 'deploiements',
     label: 'Le Déploiement',
-    subtitle: "Mise en place de l'œuvre",
-    year: '2025',
+    subtitle: "Mise en place de l'œuvre in situ",
+    year: '2027',
     categoryIds: [11, 14],
     items: [],
+    isCountdown: true,
   },
 ];
 
-// Regroupement des images issues de la base Supabase par catégorie
-let dynamicIndex = 3;
+// Regroupement d'éventuelles images additionnelles issues de la base Supabase
+let dynamicIndex = 7;
 for (const artwork of mikadoArtworks || []) {
   const urls = parseImageUrls(artwork.image_urls);
   const group = categoryGroups.find((g) => g.categoryIds.includes(Number(artwork.category_id)));
-  if (!group || urls.length === 0) continue;
+  if (!group || urls.length === 0 || group.isCountdown) continue;
 
   const createdYear = artwork.created_at ? String(new Date(artwork.created_at).getFullYear()) : group.year;
   for (const url of urls) {
-    // Éviter les doublons si l'URL est déjà présente
-    if (group.items.some((it) => it.s3Key === url)) continue;
+    if (group.items.some((it) => it.s3Key === url || it.s3Key.endsWith(url.split('/').pop() || ''))) continue;
     group.items.push({
       year: createdYear,
       imageId: `Image.1.${dynamicIndex++}`,
       s3Key: url,
       title: artwork.title || 'Le Grand Mikado de la pensée humaine',
       dimensions: group.label,
-      technique: `${group.label} — ${ group.subtitle }`,
+      technique: `${group.label} — ${group.subtitle}`,
       description: artwork.description || `${artwork.title} (${group.label})`,
       imageCaption: artwork.description
         ? `${artwork.title} — ${artwork.description}`
@@ -111,7 +164,7 @@ for (const artwork of mikadoArtworks || []) {
   }
 }
 
-const activeCategoryGroups = categoryGroups.filter((g) => g.items.length > 0);
+const activeCategoryGroups = categoryGroups.filter((g) => g.items.length > 0 || g.isCountdown);
 ---
 
 <Layout title="Chronologie — Patrick Laumond" currentPath="/">
@@ -145,10 +198,13 @@ const activeCategoryGroups = categoryGroups.filter((g) => g.items.length > 0);
         </div>
         <ImagePlaceholder
           id="Image.1.1"
-          s3Key="https://plaumondpicture.s3.eu-west-3.amazonaws.com/metahism/laumomd.jpg"
+          src="/images/mikado/hero.jpg"
+          s3Key="metahism/laumomd.jpg"
           aspectRatio="4 / 3"
-          altText="Image.1.1 — Vue panoramique d'introduction ou vidéo 360°"
-          caption="Image.1.1 — Œuvre signature inaugurale ou visualiseur immersif."
+          altText="Le Grand Mikado de la pensée humaine — Œuvre maîtresse"
+          caption="Image.1.1 — Le Grand Mikado de la pensée humaine (Œuvre maîtresse inaugurale)."
+          title="Le Grand Mikado de la pensée humaine"
+          year="2024"
         />
       </div>
     </div>
@@ -179,27 +235,67 @@ const activeCategoryGroups = categoryGroups.filter((g) => g.items.length > 0);
               <span class="node-dot"></span>
             </div>
 
-            <div class="timeline-category-items">
-              {group.items.map((step) => (
+            {group.isCountdown ? (
+              <div class="timeline-category-items">
                 <div class="timeline-item">
-                  <!-- Unique Bloc Image + Légende symbolisant l'étape -->
-                  <div class="timeline-media-card">
-                    <ImagePlaceholder
-                      id={step.imageId}
-                      s3Key={step.s3Key}
-                      aspectRatio="16 / 10"
-                      altText={step.imageCaption}
-                      caption={step.imageCaption}
-                      title={step.title}
-                      year={step.year}
-                      dimensions={step.dimensions}
-                      technique={step.technique}
-                      description={step.description}
-                    />
+                  <div class="timeline-media-card countdown-card">
+                    <div class="countdown-badge">
+                      <span class="countdown-pulse-dot"></span>
+                      <span>Échéance officielle &middot; 1er Février 2027</span>
+                    </div>
+                    <h3 class="countdown-card-title">Le Déploiement In Situ</h3>
+                    <p class="countdown-card-lead">
+                      Mise en place de l'œuvre monumentale <em>Le Grand Mikado de la pensée humaine</em>.
+                    </p>
+
+                    <div class="countdown-display" id="deployment-countdown">
+                      <div class="countdown-cell">
+                        <span class="countdown-number" id="cd-days">--</span>
+                        <span class="countdown-unit-label">Jours</span>
+                      </div>
+                      <span class="countdown-colon">:</span>
+                      <div class="countdown-cell">
+                        <span class="countdown-number" id="cd-hours">--</span>
+                        <span class="countdown-unit-label">Heures</span>
+                      </div>
+                      <span class="countdown-colon">:</span>
+                      <div class="countdown-cell">
+                        <span class="countdown-number" id="cd-minutes">--</span>
+                        <span class="countdown-unit-label">Minutes</span>
+                      </div>
+                      <span class="countdown-colon">:</span>
+                      <div class="countdown-cell">
+                        <span class="countdown-number" id="cd-seconds">--</span>
+                        <span class="countdown-unit-label">Secondes</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ) : (
+              <div class="timeline-category-items">
+                {group.items.map((step) => (
+                  <div class="timeline-item">
+                    <!-- Unique Bloc Image + Légende symbolisant l'étape -->
+                    <div class="timeline-media-card">
+                      <ImagePlaceholder
+                        id={step.imageId}
+                        src={step.src}
+                        s3Key={step.s3Key}
+                        aspectRatio="16 / 10"
+                        altText={step.imageCaption}
+                        caption={step.imageCaption}
+                        title={step.title}
+                        year={step.year}
+                        dimensions={step.dimensions}
+                        technique={step.technique}
+                        description={step.description}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -238,7 +334,7 @@ const activeCategoryGroups = categoryGroups.filter((g) => g.items.length > 0);
   }
 
   .hero-main-title {
-    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-size: clamp(1.49rem, 3.5vw, 2.69rem);
     font-weight: 400;
     letter-spacing: 0.3em;
     text-transform: uppercase;
@@ -272,11 +368,11 @@ const activeCategoryGroups = categoryGroups.filter((g) => g.items.length > 0);
   }
 
   .btn-primary-action {
-    @include gallery-button-primary($color-green-symbol, $color-green-symbol-dark);
+    @include gallery-button-primary($color-primary, $color-primary-dark);
   }
 
   .btn-secondary-action {
-    @include gallery-button-secondary($color-green-symbol, $color-border-strong);
+    @include gallery-button-secondary($color-primary, $color-border-strong);
   }
 
   .hero-visual-block {
@@ -355,9 +451,12 @@ const activeCategoryGroups = categoryGroups.filter((g) => g.items.length > 0);
   }
 
   .node-category-badge {
-    @include gallery-button-primary($color-green-symbol, $color-green-symbol);
+    @include gallery-button-primary($color-primary, $color-primary);
     cursor: default;
     transform: translateX(50%);
+    font-size: 0.78rem;
+    padding: 0.6rem 1.4rem;
+    letter-spacing: 0.1em;
 
     @include respond-to('tablet') {
       transform: none;
@@ -376,7 +475,7 @@ const activeCategoryGroups = categoryGroups.filter((g) => g.items.length > 0);
     .node-number {
       font-size: 0.75rem;
       font-weight: $font-weight-bold;
-      color: $color-green-symbol;
+      color: $color-primary;
       background: $color-white;
       padding: 0.2rem 0.55rem;
       border-radius: 0;
@@ -388,7 +487,7 @@ const activeCategoryGroups = categoryGroups.filter((g) => g.items.length > 0);
       width: 10px;
       height: 10px;
       border-radius: 0;
-      background-color: $color-green-symbol;
+      background-color: $color-primary;
       border: none;
       box-shadow: none;
     }
@@ -404,7 +503,166 @@ const activeCategoryGroups = categoryGroups.filter((g) => g.items.length > 0);
     transition: border-color $transition-fast;
 
     &:hover {
-      border-color: $color-green-symbol;
+      border-color: $color-primary;
+    }
+  }
+
+  // --- Carte Décompte Déploiement (Style Galerie Contemporaine laumond.com) ---
+  .countdown-card {
+    text-align: center;
+    padding: clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: $color-white;
+    border: 1px solid $color-border;
+    border-top: 3px solid $color-primary;
+
+    .countdown-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba($color-primary, 0.06);
+      border: 1px solid rgba($color-primary, 0.2);
+      color: $color-primary;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.85rem;
+      margin-bottom: $spacing-md;
+
+      .countdown-pulse-dot {
+        width: 8px;
+        height: 8px;
+        background-color: $color-primary;
+        border-radius: 50%;
+        display: inline-block;
+        animation: pulse-dot 1.8s infinite ease-in-out;
+      }
+    }
+
+    .countdown-card-title {
+      font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+      font-weight: 300;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: $color-text;
+      margin-bottom: $spacing-xs;
+      line-height: 1.2;
+    }
+
+    .countdown-card-lead {
+      font-size: 0.95rem;
+      color: $color-text-light;
+      margin-bottom: $spacing-xl;
+      max-width: 520px;
+      line-height: 1.6;
+
+      em {
+        font-style: italic;
+        color: $color-text;
+      }
+    }
+
+    .countdown-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(0.5rem, 2vw, 1.4rem);
+      margin-bottom: 0;
+      padding: clamp(1.2rem, 3vw, 2rem);
+      background-color: $color-background-alt;
+      border: 1px solid $color-border-light;
+      width: 100%;
+      max-width: 560px;
+
+      .countdown-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 65px;
+
+        .countdown-number {
+          font-family: monospace;
+          font-size: clamp(1.8rem, 4vw, 2.8rem);
+          font-weight: 400;
+          color: $color-primary;
+          line-height: 1.1;
+        }
+
+        .countdown-unit-label {
+          font-size: 0.68rem;
+          color: $color-muted;
+          text-transform: uppercase;
+          letter-spacing: 0.12em;
+          margin-top: 0.35rem;
+        }
+      }
+
+      .countdown-colon {
+        font-family: monospace;
+        font-size: clamp(1.5rem, 3vw, 2.2rem);
+        color: $color-muted-light;
+        margin-top: -0.6rem;
+        user-select: none;
+      }
+    }
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.35;
+      transform: scale(1.35);
     }
   }
 </style>
+
+<script>
+  function initCountdown() {
+    const target = new Date('2027-02-01T00:00:00').getTime();
+    const daysEl = document.getElementById('cd-days');
+    const hoursEl = document.getElementById('cd-hours');
+    const minsEl = document.getElementById('cd-minutes');
+    const secsEl = document.getElementById('cd-seconds');
+
+    function update() {
+      const now = new Date().getTime();
+      const diff = target - now;
+
+      if (diff <= 0) {
+        if (daysEl) daysEl.textContent = '00';
+        if (hoursEl) hoursEl.textContent = '00';
+        if (minsEl) minsEl.textContent = '00';
+        if (secsEl) secsEl.textContent = '00';
+        return;
+      }
+
+      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+      const hh = String(h).padStart(2, '0');
+      const mm = String(m).padStart(2, '0');
+      const ss = String(s).padStart(2, '0');
+
+      if (daysEl) daysEl.textContent = String(d);
+      if (hoursEl) hoursEl.textContent = hh;
+      if (minsEl) minsEl.textContent = mm;
+      if (secsEl) secsEl.textContent = ss;
+    }
+
+    update();
+    setInterval(update, 1000);
+  }
+
+  document.addEventListener('DOMContentLoaded', initCountdown);
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    initCountdown();
+  }
+</script>
