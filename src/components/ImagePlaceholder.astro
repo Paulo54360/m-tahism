@@ -78,28 +78,11 @@ const resolvedArtwork: Artwork = matchedArtwork
     };
 ---
 
-<figure
-  class="image-placeholder-card"
-  data-artwork={JSON.stringify(resolvedArtwork)}
->
+<figure class="image-placeholder-card">
   <div
     class="image-frame"
     style={`aspect-ratio: ${aspectRatio};`}
-    role="button"
-    tabindex="0"
-    title="Cliquer pour contempler l'œuvre & les métadonnées"
   >
-    <!-- Tag Artiste Collaboratif permanent (Angle vif 90°) -->
-    <div class="card-tag">
-      <span class="artist-tag">{id}</span>
-      {effectiveS3Key && <span class="s3-indicator-badge">S3</span>}
-    </div>
-
-    <!-- Badge Zoom & Plein écran (Angle vif 90°) -->
-    <div class="card-zoom-badge">
-      <span>🔎 Zoom HD</span>
-    </div>
-
     <!-- Image réelle chargée directement sans arrondi -->
     {effectiveSrc ? (
       <img
@@ -127,7 +110,6 @@ const resolvedArtwork: Artwork = matchedArtwork
 
   {caption && (
     <figcaption class="image-caption">
-      <span class="caption-marker">Fig. {id}</span>
       <span class="caption-text">{caption}</span>
     </figcaption>
   )}
@@ -135,7 +117,6 @@ const resolvedArtwork: Artwork = matchedArtwork
 
 <script>
   document.querySelectorAll<HTMLElement>('.image-placeholder-card').forEach((card) => {
-    const frame = card.querySelector<HTMLElement>('.image-frame');
     const img = card.querySelector<HTMLImageElement>('.real-artwork-image');
     const fallback = card.querySelector<HTMLElement>('.frame-content');
 
@@ -150,25 +131,6 @@ const resolvedArtwork: Artwork = matchedArtwork
         showFallback();
       }
     }
-
-    const handleClick = () => {
-      const raw = card.getAttribute('data-artwork');
-      if (!raw) return;
-      try {
-        const detail = JSON.parse(raw);
-        window.dispatchEvent(new CustomEvent('open-artwork-modal', { detail }));
-      } catch (err) {
-        console.error('[ImagePlaceholder] Données d’œuvre invalides :', err);
-      }
-    };
-
-    frame?.addEventListener('click', handleClick);
-    frame?.addEventListener('keydown', (e: KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        handleClick();
-      }
-    });
   });
 </script>
 
@@ -194,59 +156,12 @@ const resolvedArtwork: Artwork = matchedArtwork
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
     outline: none;
     transition: border-color $transition-normal;
 
-    &:hover,
-    &:focus-visible {
+    &:hover {
       border-color: var(--card-hover-border, #{$color-primary});
-
-      .card-zoom-badge {
-        opacity: 1;
-        transform: translateY(0);
-      }
     }
-  }
-
-  .card-tag {
-    position: absolute;
-    top: $spacing-md;
-    left: $spacing-md;
-    display: flex;
-    align-items: center;
-    gap: $spacing-xs;
-    z-index: 10;
-  }
-
-  .s3-indicator-badge {
-    font-family: monospace;
-    font-size: 0.65rem;
-    font-weight: $font-weight-semibold;
-    background-color: rgba(30, 41, 59, 0.9);
-    color: $color-white;
-    padding: 0.12rem 0.45rem;
-    border-radius: 0;
-    letter-spacing: 0.05em;
-  }
-
-  .card-zoom-badge {
-    position: absolute;
-    top: $spacing-md;
-    right: $spacing-md;
-    background-color: rgba(255, 255, 255, 0.95);
-    color: var(--badge-accent-color, #{$color-primary});
-    border: 1px solid $color-border;
-    border-radius: 0;
-    font-size: 0.72rem;
-    font-weight: $font-weight-medium;
-    padding: 0.25rem 0.6rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    opacity: 0;
-    transform: translateY(-2px);
-    transition: all $transition-fast;
-    z-index: 10;
   }
 
   // Image réelle directement chargée
@@ -316,16 +231,12 @@ const resolvedArtwork: Artwork = matchedArtwork
   }
 
   .image-caption {
-    display: flex;
-    align-items: baseline;
-    gap: $spacing-xs;
     font-size: 0.75rem;
     color: $color-text-light;
     line-height: 1.4;
 
-    .caption-marker {
-      font-weight: $font-weight-semibold;
-      color: var(--badge-accent-color, #{$color-primary});
+    .caption-text {
+      color: $color-text-light;
     }
   }
 </style>

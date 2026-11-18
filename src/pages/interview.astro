@@ -5,76 +5,52 @@ import ImagePlaceholder from '../components/ImagePlaceholder.astro';
 
 const interviewQuestions = [
   {
-    qId: "Question.2.1",
     question: "Vous expliquez que l'impulsion originelle du Grand Mikado de la pensée humaine provient d'un vertige face à l'hyper-connexion actuelle et au flux simultané d'idées, de croyances et d'algorithmes. En quoi la vision d'une conscience collective assimilée à un jeu de mikado géant jeté dans l'espace traduit-elle l'état de notre société ?",
-    rId: "Reponse.2.1",
-    textId: "Texte.2.2",
     answer: null, // En attente de Patrick Laumond
-    mediaId: "Image.2.2",
     artworkId: "le-grand-mikado",
     src: "/images/mikado/hero.jpg",
     s3Key: "metahism/laumomd.jpg",
-    mediaCaption: "Image.2.2 — « Le grand Mikado de la pensée humaine » (2024), 250 × 180 cm. Toile monumentale, technique mixte sur lin.",
+    mediaCaption: "« Le grand Mikado de la pensée humaine » (2024), 250 × 180 cm. Toile monumentale, technique mixte sur lin.",
   },
   {
-    qId: "Question.2.2",
     question: "En observant vos milliers de trajectoires colorées, le spectateur perçoit un chaos apparent qui est en réalité régi par un ordre géométrique et vibratoire subtil. Comment parvenez-vous à équilibrer la tension entre la fragilité de chaque baguette et la structure globale de l'œuvre ?",
-    rId: "Reponse.2.2",
-    textId: "Texte.2.3",
     answer: null, // En attente de Patrick Laumond
-    mediaId: "Image.2.3",
     artworkId: "mikado-dessin",
     src: "/images/mikado/dessin.webp",
     s3Key: "Drawings/le-grand-mikado-de-la-pensee-humaine.webp",
-    mediaCaption: "Image.2.3 — « Le grand Mikado de la pensée humaine (Dessin) » (2023). Première ébauche graphique structurant les axes et tensions.",
+    mediaCaption: "« Le grand Mikado de la pensée humaine (Dessin) » (2023). Première ébauche graphique structurant les axes et tensions.",
   },
   {
-    qId: "Question.2.3",
     question: "Vous comparez la pensée à un jeu de mikado où le retrait imprudent d'une seule idée, d'une mémoire ou d'un préjugé risque de faire s'ébranler tout l'édifice. Votre œuvre constitue-t-elle une mise en garde contre la déconstruction incontrôlée de nos repères ?",
-    rId: "Reponse.2.3",
-    textId: "Texte.2.4",
     answer: null, // En attente de Patrick Laumond
-    mediaId: "Image.2.4",
     artworkId: "mikado-transcription-1",
     src: "/images/mikado/transcription-1.webp",
     s3Key: "Transcriptions/le-grand-mikado-de-la-pensee-humaine.webp",
-    mediaCaption: "Image.2.4 — « Le grand Mikado de la pensée humaine (Transcription 1) » (2023). Première transcription : définir l'œuvre dans l'espace.",
+    mediaCaption: "« Le grand Mikado de la pensée humaine (Transcription 1) » (2023). Première transcription : définir l'œuvre dans l'espace.",
   },
   {
-    qId: "Question.2.4",
     question: "Au cœur du Métahisme, vous refusez de séparer la matière et l'esprit pour les définir comme des « lignes d'interférence ». De quelle manière la peinture parvient-elle à figer ce moment précis où l'équilibre oscille entre une stabilité sereine et un effondrement fécond ?",
-    rId: "Reponse.2.4",
-    textId: "Texte.2.5",
     answer: null, // En attente de Patrick Laumond
-    mediaId: "Image.2.5",
     artworkId: "mikado-transcription-2",
     src: "/images/mikado/transcription-2.webp",
     s3Key: "Transcriptions/le-grand-mikado-de-la-pensee-humaine-2.webp",
-    mediaCaption: "Image.2.5 — « Le grand Mikado de la pensée humaine (Transcription 2) » (2023). Organisation spatiale et chromatique tridimensionnelle.",
+    mediaCaption: "« Le grand Mikado de la pensée humaine (Transcription 2) » (2023). Organisation spatiale et chromatique tridimensionnelle.",
   },
   {
-    qId: "Question.2.5",
     question: "Votre technique implique un travail à la main d'une rigueur calligraphique, juxtaposant des pigments denses, des laques transparentes et des empâtements minéraux. En quoi cette superposition de matières participe-t-elle à faire de la couleur un véritable vecteur de conscience ?",
-    rId: "Reponse.2.5",
-    textId: "Texte.2.6",
     answer: null, // En attente de Patrick Laumond
-    mediaId: "Image.2.6",
     artworkId: "mikado-archetype-1",
     src: "/images/mikado/archetype-1.webp",
     s3Key: "Archetypes/le-grand-mikado-de-la-pensee.webp",
-    mediaCaption: "Image.2.6 — « Le grand Mikado de la pensée humaine (Archétype 1) » (2024). Prototype tridimensionnel matérialisant l'entrecroisement des vecteurs.",
+    mediaCaption: "« Le grand Mikado de la pensée humaine (Archétype 1) » (2024). Prototype tridimensionnel matérialisant l'entrecroisement des vecteurs.",
   },
   {
-    qId: "Question.2.6",
     question: "Certaines baguettes semblent littéralement flotter dans l'espace au sein du réseau de lignes. Comment avez-vous abordé la conception de cette structure monumentale dans votre atelier pour obtenir cet effet visuel ?",
-    rId: "Reponse.2.6",
-    textId: "Texte.2.7",
     answer: null, // En attente de Patrick Laumond
-    mediaId: "Image.2.7",
     artworkId: "mikado-archetype-2",
     src: "/images/mikado/archetype-2.webp",
     s3Key: "Archetypes/le-grand-mikado-de-la-pensee-2.webp",
-    mediaCaption: "Image.2.7 — « Le grand Mikado de la pensée humaine (Archétype 2) » (2024). Seconde vue de l'archétype et suspension des lignes.",
+    mediaCaption: "« Le grand Mikado de la pensée humaine (Archétype 2) » (2024). Seconde vue de l'archétype et suspension des lignes.",
   },
 ];
 ---
@@ -88,9 +64,6 @@ const interviewQuestions = [
           <span class="category-name">Entretien d'Atelier</span>
         </div>
 
-        <div class="tag-row">
-          <span class="artist-tag">Titre.2.1</span>
-        </div>
         <h1 class="interview-headline">
           « Le grand Mikado de la pensée humaine »
           <span class="headline-sub">Entretien avec Patrick Laumond</span>
@@ -102,11 +75,8 @@ const interviewQuestions = [
         </div>
 
         <div class="editorial-lead-container">
-          <div class="tag-row">
-            <span class="artist-tag">Texte.2.1</span>
-          </div>
           <p class="editorial-lead">
-            Texte.2.1 — Dans cet entretien exclusif préparé pour l'exposition, Paul Convert interroge l'artiste Patrick Laumond sur la genèse, l'architecture vibratoire et la portée philosophique de son chef-d'œuvre monumental. Une traversée au cœur du Métahisme où chaque baguette posée met en résonance la matière, l'esprit et la conscience contemporaine.
+            Dans cet entretien exclusif préparé pour l'exposition, Paul Convert interroge l'artiste Patrick Laumond sur la genèse, l'architecture vibratoire et la portée philosophique de son chef-d'œuvre monumental. Une traversée au cœur du Métahisme où chaque baguette posée met en résonance la matière, l'esprit et la conscience contemporaine.
           </p>
         </div>
       </div>
@@ -116,16 +86,13 @@ const interviewQuestions = [
     <section class="artist-visual-section">
       <div class="main-container interview-container">
         <div class="visual-wrapper">
-          <div class="tag-row">
-            <span class="artist-tag">Image.2.1</span>
-          </div>
           <ImagePlaceholder
-            id="Image.2.1"
+            id="patrick-laumond-atelier"
             src="/images/artworks/patrick-laumond.jpg"
             s3Key="artworks/patrick-laumond-atelier-hd.webp"
             aspectRatio="16 / 9"
-            altText="Image.2.1 — Patrick Laumond dans son atelier de création"
-            caption="Image.2.1 — Patrick Laumond dans son atelier face à la structure monumentale du Grand Mikado."
+            altText="Patrick Laumond dans son atelier de création"
+            caption="Patrick Laumond dans son atelier face à la structure monumentale du Grand Mikado."
           />
         </div>
       </div>
@@ -141,7 +108,6 @@ const interviewQuestions = [
               <div class="qa-block question-entry">
                 <div class="entry-meta">
                   <span class="speaker-label speaker-interviewer">Paul Convert</span>
-                  <span class="artist-tag">{item.qId}</span>
                 </div>
                 <h3 class="question-text">{item.question}</h3>
               </div>
@@ -150,10 +116,6 @@ const interviewQuestions = [
               <div class="qa-block answer-entry">
                 <div class="entry-meta">
                   <span class="speaker-label speaker-artist">Patrick Laumond</span>
-                  <div class="tag-group">
-                    <span class="artist-tag">{item.rId}</span>
-                    <span class="artist-tag">{item.textId}</span>
-                  </div>
                 </div>
 
                 <div class="answer-content">
@@ -168,13 +130,10 @@ const interviewQuestions = [
               </div>
 
               <!-- Image d'illustration du Grand Mikado -->
-              {item.mediaId && (
+              {item.src && (
                 <div class="entry-media-wrapper">
-                  <div class="tag-row">
-                    <span class="artist-tag">{item.mediaId}</span>
-                  </div>
                   <ImagePlaceholder
-                    id={item.mediaId}
+                    id={item.artworkId || 'mikado-etape'}
                     src={item.src}
                     s3Key={item.s3Key || ''}
                     artworkId={item.artworkId}
@@ -190,30 +149,21 @@ const interviewQuestions = [
 
         <!-- Citation maîtresse en exergue -->
         <aside class="quote-editorial-card">
-          <div class="tag-row">
-            <span class="artist-tag">Titre.2.2</span>
-          </div>
           <h2 class="quote-title">Aphorisme du Métahisme</h2>
 
-          <div class="tag-row">
-            <span class="artist-tag">Texte.2.8</span>
-          </div>
           <blockquote class="quote-body">
             « Chaque pensée déplacée dans le Mikado fait vaciller l'architecture invisible du monde. Peindre n'est pas représenter : c'est préserver le point d'équilibre. »
           </blockquote>
           <cite class="quote-author">— Patrick Laumond</cite>
 
           <div class="quote-image-box">
-            <div class="tag-row">
-              <span class="artist-tag">Image.2.8</span>
-            </div>
             <ImagePlaceholder
-              id="Image.2.8"
+              id="mikado-sceau"
               src="/images/artworks/mikado-sceau.jpg"
               s3Key="artworks/le-grand-mikado-sceau-hd.webp"
               aspectRatio="21 / 9"
-              altText="Image.2.8 — Sceau métahiste apposé sur la toile du Grand Mikado"
-              caption="Image.2.8 — Sceau métahiste apposé sur la toile monumentale du Grand Mikado de la pensée humaine."
+              altText="Sceau métahiste apposé sur la toile du Grand Mikado"
+              caption="Sceau métahiste apposé sur la toile monumentale du Grand Mikado de la pensée humaine."
             />
           </div>
         </aside>

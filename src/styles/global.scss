@@ -87,10 +87,6 @@ p {
   }
 }
 
-.tag-row {
-  margin-bottom: 0.35rem;
-}
-
 a {
   color: inherit;
   text-decoration: none;
@@ -115,11 +111,6 @@ svg {
 button, input, select, textarea {
   font-family: inherit;
   border-radius: 0;
-}
-
-// --- Repères de collaboration artistes ---
-.artist-tag {
-  @include artist-label-badge;
 }
 
 // --- Utilitaires de conteneur et section ---

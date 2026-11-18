@@ -4,10 +4,6 @@ import SectionHeader from '../components/SectionHeader.astro';
 import ImagePlaceholder from '../components/ImagePlaceholder.astro';
 
 const partner = {
-  imageId: "Partenaire.Image.3.1",
-  nameId: "Partenaire.Nom.3.1",
-  titleId: "Titre.3.2",
-  textId: "Texte.3.2",
   name: "UNIKALO",
   subtitle: "Fabricant Français de Peintures Bâtiment & Décoration",
   company: "SCSO - Unikalo",
@@ -28,30 +24,21 @@ const partner = {
           <span class="category-name">Mécénat & Soutien Artistique</span>
         </div>
 
-        <div class="tag-row">
-          <span class="artist-tag">Titre.3.1</span>
-        </div>
         <h1 class="partners-main-title">
           Partenaire Officiel
           <span class="headline-sub">L'engagement d'UNIKALO aux côtés de Patrick Laumond</span>
         </h1>
 
-        <div class="tag-row">
-          <span class="artist-tag">Texte.3.1</span>
-        </div>
         <p class="partners-lead-text">
-          Texte.3.1 — Dans le cadre de la création monumentale de l'œuvre « Le grand Mikado de la pensée humaine », Patrick Laumond et le mouvement Métahiste s'associent à la maison UNIKALO. Nous exprimons notre sincère gratitude à leurs équipes pour leur soutien et la mise à disposition de l'ensemble de la peinture nécessaire à la concrétisation et à la réalisation de l'œuvre.
+          Dans le cadre de la création monumentale de l'œuvre « Le grand Mikado de la pensée humaine », Patrick Laumond et le mouvement Métahiste s'associent à la maison UNIKALO. Nous exprimons notre sincère gratitude à leurs équipes pour leur soutien et la mise à disposition de l'ensemble de la peinture nécessaire à la concrétisation et à la réalisation de l'œuvre.
         </p>
 
         <div class="hero-media-wrapper">
-          <div class="tag-row">
-            <span class="artist-tag">Image.3.1</span>
-          </div>
           <ImagePlaceholder
-            id="Image.3.1"
+            id="unikalo-hero"
             aspectRatio="21 / 9"
-            altText="Image.3.1 — Présentation du projet Le grand Mikado de la pensée humaine et collaboration Unikalo"
-            caption="Image.3.1 — Concrétisation matérielle de l'œuvre « Le grand Mikado de la pensée humaine » soutenue par Unikalo."
+            altText="Présentation du projet Le grand Mikado de la pensée humaine et collaboration Unikalo"
+            caption="Concrétisation matérielle de l'œuvre « Le grand Mikado de la pensée humaine » soutenue par Unikalo."
           />
         </div>
       </div>
@@ -60,15 +47,12 @@ const partner = {
     <!-- SECTION MÉCÉNAT & COLLABORATION (STYLE GALERIE CONTEMPORAINE) -->
     <section class="partner-classic-section">
       <div class="main-container">
-        <SectionHeader tag="h2" labelId={partner.titleId}>
+        <SectionHeader tag="h2">
           Mécénat de Peinture & Réalisation Monumentale
         </SectionHeader>
 
-        <div class="tag-row">
-          <span class="artist-tag">{partner.textId}</span>
-        </div>
         <p class="section-description">
-          Texte.3.2 — Soutien exclusif apporté à la réalisation matérielle de l'œuvre « Le grand Mikado de la pensée humaine ».
+          Soutien exclusif apporté à la réalisation matérielle de l'œuvre « Le grand Mikado de la pensée humaine ».
         </p>
 
         <!-- CARTOUCHE DE PARTENARIAT ÉPURÉ -->
@@ -76,17 +60,11 @@ const partner = {
           <!-- En-tête du cartel : Logo + Identité -->
           <div class="document-header">
             <div class="document-brand">
-              <div class="tag-row">
-                <span class="artist-tag">{partner.nameId}</span>
-              </div>
               <h3 class="document-title">{partner.name}</h3>
               <p class="document-subtitle">{partner.subtitle}</p>
             </div>
 
             <div class="document-logo-frame">
-              <div class="tag-row">
-                <span class="artist-tag">{partner.imageId}</span>
-              </div>
               <div class="logo-white-box">
                 <img
                   src="/images/partenaires/unikalo.png"

@@ -237,13 +237,6 @@
           dim.textContent = art.dimensions;
           sub.appendChild(dim);
 
-          if (art.artistRef) {
-            const refTag = document.createElement('span');
-            refTag.className = 'artist-tag result-tag';
-            refTag.textContent = art.artistRef;
-            sub.appendChild(refTag);
-          }
-
           info.append(header, sub);
 
           const arrow = document.createElement('div');
@@ -290,9 +283,8 @@
       });
     }
 
-    selectArtwork(artwork: Artwork) {
+    selectArtwork(_artwork: Artwork) {
       this.closeDropdown();
-      window.dispatchEvent(new CustomEvent('open-artwork-modal', { detail: artwork }));
     }
 
     isDropdownOpen(): boolean {
