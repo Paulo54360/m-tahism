@@ -6,41 +6,75 @@ import ImagePlaceholder from '../components/ImagePlaceholder.astro';
 const interviewQuestions = [
   {
     qId: "Question.2.1",
-    question: "Patrick Laumond, d'où est née l'impulsion originelle de l'œuvre « Le grand Mikado de la pensée humaine » ?",
+    question: "Vous expliquez que l'impulsion originelle du Grand Mikado de la pensée humaine provient d'un vertige face à l'hyper-connexion actuelle et au flux simultané d'idées, de croyances et d'algorithmes. En quoi la vision d'une conscience collective assimilée à un jeu de mikado géant jeté dans l'espace traduit-elle l'état de notre société ?",
     rId: "Reponse.2.1",
     textId: "Texte.2.2",
-    answer: "Texte.2.2 — L'impulsion est née d'un vertige face à l'hyper-connexion contemporaine. En observant la simultanéité des idées, des croyances et des algorithmes qui traversent notre époque, j'ai visualisé notre conscience collective comme un jeu de mikado géant, jeté dans l'espace. Des milliers de trajectoires colorées, apparemment chaotiques, mais régies par un ordre géométrique et vibratoire subtil. Chaque baguette posée soutient ou met en tension toutes les autres.",
+    answer: null, // En attente de Patrick Laumond
     mediaId: "Image.2.2",
-    s3Key: "artworks/vecteurs-de-conscience-diptyque-hd.webp",
-    mediaCaption: "Image.2.2 — Vue d'ensemble du réseau de lignes et des tensions spatiales de l'œuvre.",
+    artworkId: "le-grand-mikado",
+    src: "/images/mikado/hero.jpg",
+    s3Key: "metahism/laumomd.jpg",
+    mediaCaption: "Image.2.2 — « Le grand Mikado de la pensée humaine » (2024), 250 × 180 cm. Toile monumentale, technique mixte sur lin.",
   },
   {
     qId: "Question.2.2",
-    question: "Pourquoi avoir choisi la métaphore du Mikado pour symboliser la pensée et le Métahisme ?",
+    question: "En observant vos milliers de trajectoires colorées, le spectateur perçoit un chaos apparent qui est en réalité régi par un ordre géométrique et vibratoire subtil. Comment parvenez-vous à équilibrer la tension entre la fragilité de chaque baguette et la structure globale de l'œuvre ?",
     rId: "Reponse.2.2",
     textId: "Texte.2.3",
-    answer: "Texte.2.3 — Le jeu du mikado porte en lui une loi fondamentale : la solidarité absolue de tous les éléments. Si vous tentez d'extraire une pensée, un préjugé ou une mémoire sans précaution, c'est l'ensemble de l'édifice qui s'ébranle. Dans le Métahisme, nous affirmons que la matière et l'esprit ne sont pas des entités isolées mais des lignes d'interférence. Peindre le Grand Mikado, c'est figer l'instant précis où l'équilibre oscille entre stabilité sereine et effondrement fécond.",
-    mediaId: null,
-    s3Key: null,
+    answer: null, // En attente de Patrick Laumond
+    mediaId: "Image.2.3",
+    artworkId: "mikado-dessin",
+    src: "/images/mikado/dessin.webp",
+    s3Key: "Drawings/le-grand-mikado-de-la-pensee-humaine.webp",
+    mediaCaption: "Image.2.3 — « Le grand Mikado de la pensée humaine (Dessin) » (2023). Première ébauche graphique structurant les axes et tensions.",
   },
   {
     qId: "Question.2.3",
-    question: "Comment le Métahisme se traduit-il techniquement dans la matière et la superposition des couleurs ?",
+    question: "Vous comparez la pensée à un jeu de mikado où le retrait imprudent d'une seule idée, d'une mémoire ou d'un préjugé risque de faire s'ébranler tout l'édifice. Votre œuvre constitue-t-elle une mise en garde contre la déconstruction incontrôlée de nos repères ?",
     rId: "Reponse.2.3",
     textId: "Texte.2.4",
-    answer: "Texte.2.4 — Chaque ligne est peinte à la main avec une rigueur calligraphique, en alternant pigments denses, laques transparentes et empâtements minéraux. Certaines baguettes semblent flotter en avant-plan grâce à des ombres portées optiques, tandis que d'autres s'enfoncent dans des profondeurs abyssales. C'est une œuvre qui refuse la bi-dimensionnalité : elle respire et se recompose selon l'angle d'incidence de la lumière et la distance de contemplation.",
-    mediaId: "Image.2.3",
-    s3Key: "artworks/labyrinthe-synaptique-hd.webp",
-    mediaCaption: "Image.2.3 — Macro-photographie haute définition révélant la texture pigmentaire et les glacis superposés.",
+    answer: null, // En attente de Patrick Laumond
+    mediaId: "Image.2.4",
+    artworkId: "mikado-transcription-1",
+    src: "/images/mikado/transcription-1.webp",
+    s3Key: "Transcriptions/le-grand-mikado-de-la-pensee-humaine.webp",
+    mediaCaption: "Image.2.4 — « Le grand Mikado de la pensée humaine (Transcription 1) » (2023). Première transcription : définir l'œuvre dans l'espace.",
   },
   {
     qId: "Question.2.4",
-    question: "Quelle expérience souhaitez-vous faire vivre au spectateur face à cette œuvre monumentale ?",
+    question: "Au cœur du Métahisme, vous refusez de séparer la matière et l'esprit pour les définir comme des « lignes d'interférence ». De quelle manière la peinture parvient-elle à figer ce moment précis où l'équilibre oscille entre une stabilité sereine et un effondrement fécond ?",
     rId: "Reponse.2.4",
     textId: "Texte.2.5",
-    answer: "Texte.2.5 — Je souhaite qu'il s'arrête et cesse de vouloir tout comprendre intellectuellement. Le Grand Mikado est un accélérateur de méditation. Au premier regard, on voit la dispersion ; au second regard, l'harmonie des axes se révèle. Le spectateur devient le joueur silencieux qui, par son regard, fait tenir l'échafaudage de la pensée humaine.",
-    mediaId: null,
-    s3Key: null,
+    answer: null, // En attente de Patrick Laumond
+    mediaId: "Image.2.5",
+    artworkId: "mikado-transcription-2",
+    src: "/images/mikado/transcription-2.webp",
+    s3Key: "Transcriptions/le-grand-mikado-de-la-pensee-humaine-2.webp",
+    mediaCaption: "Image.2.5 — « Le grand Mikado de la pensée humaine (Transcription 2) » (2023). Organisation spatiale et chromatique tridimensionnelle.",
+  },
+  {
+    qId: "Question.2.5",
+    question: "Votre technique implique un travail à la main d'une rigueur calligraphique, juxtaposant des pigments denses, des laques transparentes et des empâtements minéraux. En quoi cette superposition de matières participe-t-elle à faire de la couleur un véritable vecteur de conscience ?",
+    rId: "Reponse.2.5",
+    textId: "Texte.2.6",
+    answer: null, // En attente de Patrick Laumond
+    mediaId: "Image.2.6",
+    artworkId: "mikado-archetype-1",
+    src: "/images/mikado/archetype-1.webp",
+    s3Key: "Archetypes/le-grand-mikado-de-la-pensee.webp",
+    mediaCaption: "Image.2.6 — « Le grand Mikado de la pensée humaine (Archétype 1) » (2024). Prototype tridimensionnel matérialisant l'entrecroisement des vecteurs.",
+  },
+  {
+    qId: "Question.2.6",
+    question: "Certaines baguettes semblent littéralement flotter dans l'espace au sein du réseau de lignes. Comment avez-vous abordé la conception de cette structure monumentale dans votre atelier pour obtenir cet effet visuel ?",
+    rId: "Reponse.2.6",
+    textId: "Texte.2.7",
+    answer: null, // En attente de Patrick Laumond
+    mediaId: "Image.2.7",
+    artworkId: "mikado-archetype-2",
+    src: "/images/mikado/archetype-2.webp",
+    s3Key: "Archetypes/le-grand-mikado-de-la-pensee-2.webp",
+    mediaCaption: "Image.2.7 — « Le grand Mikado de la pensée humaine (Archétype 2) » (2024). Seconde vue de l'archétype et suspension des lignes.",
   },
 ];
 ---
@@ -49,9 +83,9 @@ const interviewQuestions = [
   <div class="interview-page">
     <!-- EN-TÊTE ÉDITORIAL DE L'ENTRETIEN -->
     <header class="interview-hero">
-      <div class="main-container">
+      <div class="main-container interview-container">
         <div class="hero-top-badge">
-          <span class="category-name">Entretien d'Atelier & Exposition</span>
+          <span class="category-name">Entretien d'Atelier</span>
         </div>
 
         <div class="tag-row">
@@ -59,15 +93,20 @@ const interviewQuestions = [
         </div>
         <h1 class="interview-headline">
           « Le grand Mikado de la pensée humaine »
-          <span class="headline-sub">Rencontre au cœur du Métahisme avec Patrick Laumond</span>
+          <span class="headline-sub">Entretien avec Patrick Laumond</span>
         </h1>
+
+        <div class="interview-byline">
+          <span class="byline-label">Propos recueillis par</span>
+          <span class="byline-author">Paul Convert</span>
+        </div>
 
         <div class="editorial-lead-container">
           <div class="tag-row">
             <span class="artist-tag">Texte.2.1</span>
           </div>
           <p class="editorial-lead">
-            Texte.2.1 — Dans cet entretien exclusif réalisé à l'occasion de l'exposition numérique, Patrick Laumond dévoile la genèse, la symbolique et la démarche philosophique de son chef-d'œuvre monumental. Une traversée intime dans les méandres d'une pensée où la couleur devient vecteur de conscience.
+            Texte.2.1 — Dans cet entretien exclusif préparé pour l'exposition, Paul Convert interroge l'artiste Patrick Laumond sur la genèse, l'architecture vibratoire et la portée philosophique de son chef-d'œuvre monumental. Une traversée au cœur du Métahisme où chaque baguette posée met en résonance la matière, l'esprit et la conscience contemporaine.
           </p>
         </div>
       </div>
@@ -75,17 +114,18 @@ const interviewQuestions = [
 
     <!-- PORTRAIT / VISUEL D'INTRODUCTION DE L'ARTISTE -->
     <section class="artist-visual-section">
-      <div class="main-container">
+      <div class="main-container interview-container">
         <div class="visual-wrapper">
           <div class="tag-row">
             <span class="artist-tag">Image.2.1</span>
           </div>
           <ImagePlaceholder
             id="Image.2.1"
+            src="/images/artworks/patrick-laumond.jpg"
             s3Key="artworks/patrick-laumond-atelier-hd.webp"
             aspectRatio="16 / 9"
-            altText="Image.2.1 — Patrick Laumond devant Le Grand Mikado dans l'atelier"
-            caption="Image.2.1 — Patrick Laumond dans son atelier de création face à la structure monumentale du Grand Mikado."
+            altText="Image.2.1 — Patrick Laumond dans son atelier de création"
+            caption="Image.2.1 — Patrick Laumond dans son atelier face à la structure monumentale du Grand Mikado."
           />
         </div>
       </div>
@@ -95,42 +135,51 @@ const interviewQuestions = [
     <section class="interview-body-section">
       <div class="main-container interview-container">
         <div class="interview-flow">
-          {interviewQuestions.map((item, index) => (
-            <article class="interview-block">
-              <!-- Encart Question -->
-              <div class="qa-item question-box">
-                <div class="qa-header">
-                  <span class="qa-speaker interviewer-label">La Rédaction</span>
+          {interviewQuestions.map((item) => (
+            <article class="interview-entry">
+              <!-- Question de Paul Convert -->
+              <div class="qa-block question-entry">
+                <div class="entry-meta">
+                  <span class="speaker-label speaker-interviewer">Paul Convert</span>
                   <span class="artist-tag">{item.qId}</span>
                 </div>
                 <h3 class="question-text">{item.question}</h3>
               </div>
 
-              <!-- Encart Réponse de Patrick Laumond -->
-              <div class="qa-item answer-box">
-                <div class="qa-header">
-                  <span class="qa-speaker artist-label">Patrick Laumond</span>
+              <!-- Réponse de Patrick Laumond (Placeholder sobre) -->
+              <div class="qa-block answer-entry">
+                <div class="entry-meta">
+                  <span class="speaker-label speaker-artist">Patrick Laumond</span>
                   <div class="tag-group">
                     <span class="artist-tag">{item.rId}</span>
                     <span class="artist-tag">{item.textId}</span>
                   </div>
                 </div>
+
                 <div class="answer-content">
-                  <p class="answer-text">{item.answer}</p>
+                  {item.answer ? (
+                    <p class="answer-text">{item.answer}</p>
+                  ) : (
+                    <p class="answer-placeholder">
+                      [Réponse de Patrick Laumond en attente d'intégration]
+                    </p>
+                  )}
                 </div>
               </div>
 
-              <!-- Image d'illustration si disponible -->
+              <!-- Image d'illustration du Grand Mikado -->
               {item.mediaId && (
-                <div class="qa-media-wrapper">
+                <div class="entry-media-wrapper">
                   <div class="tag-row">
                     <span class="artist-tag">{item.mediaId}</span>
                   </div>
                   <ImagePlaceholder
                     id={item.mediaId}
+                    src={item.src}
                     s3Key={item.s3Key || ''}
+                    artworkId={item.artworkId}
                     aspectRatio="16 / 9"
-                    altText={item.mediaId}
+                    altText={item.mediaCaption}
                     caption={item.mediaCaption}
                   />
                 </div>
@@ -140,31 +189,31 @@ const interviewQuestions = [
         </div>
 
         <!-- Citation maîtresse en exergue -->
-        <aside class="quote-highlight-card">
-          <div class="quote-decor">“</div>
+        <aside class="quote-editorial-card">
           <div class="tag-row">
             <span class="artist-tag">Titre.2.2</span>
           </div>
           <h2 class="quote-title">Aphorisme du Métahisme</h2>
 
           <div class="tag-row">
-            <span class="artist-tag">Texte.2.6</span>
+            <span class="artist-tag">Texte.2.8</span>
           </div>
           <blockquote class="quote-body">
-            Texte.2.6 — « Chaque pensée déplacée dans le Mikado fait vaciller l'architecture invisible du monde. Peindre n'est pas représenter : c'est préserver le point d'équilibre. »
+            « Chaque pensée déplacée dans le Mikado fait vaciller l'architecture invisible du monde. Peindre n'est pas représenter : c'est préserver le point d'équilibre. »
           </blockquote>
           <cite class="quote-author">— Patrick Laumond</cite>
 
           <div class="quote-image-box">
             <div class="tag-row">
-              <span class="artist-tag">Image.2.4</span>
+              <span class="artist-tag">Image.2.8</span>
             </div>
             <ImagePlaceholder
-              id="Image.2.4"
+              id="Image.2.8"
+              src="/images/artworks/mikado-sceau.jpg"
               s3Key="artworks/le-grand-mikado-sceau-hd.webp"
               aspectRatio="21 / 9"
-              altText="Image.2.4 — Détail de signature et cartouche artistique"
-              caption="Image.2.4 — Sceau métahiste apposé sur la toile du Grand Mikado."
+              altText="Image.2.8 — Sceau métahiste apposé sur la toile du Grand Mikado"
+              caption="Image.2.8 — Sceau métahiste apposé sur la toile monumentale du Grand Mikado de la pensée humaine."
             />
           </div>
         </aside>
@@ -183,95 +232,114 @@ const interviewQuestions = [
     @include green-accent-scope;
   }
 
+  .interview-container {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+
   .tag-group {
     display: inline-flex;
     gap: $spacing-xs;
     flex-wrap: wrap;
   }
 
-  // --- Hero Éditorial ---
+  // --- Hero Éditorial Sobre ---
   .interview-hero {
-    padding-top: clamp(2.5rem, 6vw, 4.5rem);
+    padding-top: clamp(2.5rem, 5vw, 4rem);
     padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
     background-color: $color-background;
   }
 
   .hero-top-badge {
-    margin-bottom: $spacing-md;
+    margin-bottom: $spacing-sm;
 
     .category-name {
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-weight: $font-weight-semibold;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: $color-primary;
     }
   }
 
   .interview-headline {
-    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-size: clamp(2rem, 3.6vw, 3.1rem);
     font-weight: $font-weight-light;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: $color-text;
-    line-height: 1.2;
-    margin-bottom: $spacing-lg;
+    line-height: 1.22;
+    margin-bottom: $spacing-md;
 
     .headline-sub {
       display: block;
-      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      font-size: clamp(1.05rem, 1.8vw, 1.35rem);
       font-weight: $font-weight-regular;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
       color: $color-text-light;
-      margin-top: $spacing-sm;
+      margin-top: 0.4rem;
       text-transform: none;
     }
   }
 
+  .interview-byline {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    font-size: 0.88rem;
+    color: $color-text-light;
+    margin-bottom: $spacing-lg;
+    padding-bottom: $spacing-md;
+    border-bottom: 1px solid $color-border-light;
+
+    .byline-label {
+      font-style: italic;
+    }
+
+    .byline-author {
+      font-weight: $font-weight-medium;
+      color: $color-text;
+      letter-spacing: 0.02em;
+    }
+  }
+
   .editorial-lead-container {
-    max-width: 860px;
-    margin-top: $spacing-md;
-    border-left: 3px solid $color-primary;
-    padding-left: clamp(1rem, 3vw, 1.8rem);
+    margin-top: $spacing-sm;
   }
 
   .editorial-lead {
-    font-size: clamp(1rem, 1.6vw, 1.15rem);
+    font-size: clamp(1rem, 1.4vw, 1.1rem);
     line-height: 1.8;
     color: $color-text;
     margin: 0;
+    font-weight: $font-weight-regular;
   }
 
-  // --- Visuel de tête ---
+  // --- Visuel d'introduction ---
   .artist-visual-section {
     padding-bottom: clamp(2rem, 4vw, 3.5rem);
   }
 
   .visual-wrapper {
-    max-width: 1100px;
-    margin: 0 auto;
+    width: 100%;
   }
 
-  // --- Corps d'interview ---
+  // --- Corps d'interview (sobre et aéré) ---
   .interview-body-section {
-    padding-top: $spacing-xl;
-  }
-
-  .interview-container {
-    max-width: 950px;
+    padding-top: $spacing-lg;
   }
 
   .interview-flow {
     display: flex;
     flex-direction: column;
-    gap: clamp(2.5rem, 5vw, 4.5rem);
+    gap: clamp(3rem, 6vw, 4.5rem);
   }
 
-  .interview-block {
+  .interview-entry {
     display: flex;
     flex-direction: column;
     gap: $spacing-lg;
-    padding-bottom: clamp(2rem, 4vw, 3.5rem);
+    padding-bottom: clamp(2.5rem, 5vw, 4rem);
     border-bottom: 1px solid $color-border-light;
 
     &:last-child {
@@ -279,98 +347,82 @@ const interviewQuestions = [
     }
   }
 
-  .qa-item {
+  .qa-block {
     display: flex;
     flex-direction: column;
-    gap: $spacing-xs;
+    gap: 0.4rem;
   }
 
-  .qa-header {
+  .entry-meta {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: $spacing-md;
     flex-wrap: wrap;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.15rem;
   }
 
-  .qa-speaker {
-    font-size: 0.78rem;
+  .speaker-label {
+    font-size: 0.76rem;
     font-weight: $font-weight-semibold;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
 
-    &.interviewer-label {
+    &.speaker-interviewer {
       color: $color-muted-dark;
     }
 
-    &.artist-label {
+    &.speaker-artist {
       color: $color-primary;
     }
   }
 
-  // Question style
-  .question-box {
-    background-color: $color-background-alt;
-    border-left: 3px solid $color-muted-dark;
-    border-radius: 0;
-    padding: $spacing-md $spacing-lg;
-
+  // Style de la question : pur, sobre, typographie claire sans boîte
+  .question-entry {
     .question-text {
-      font-size: clamp(1.05rem, 1.8vw, 1.28rem);
+      font-size: clamp(1.05rem, 1.6vw, 1.22rem);
       font-weight: $font-weight-medium;
       color: $color-text;
-      line-height: 1.45;
+      line-height: 1.55;
       margin: 0;
     }
   }
 
-  // Réponse style
-  .answer-box {
-    background-color: $color-white;
-    border-left: 3px solid $color-primary;
-    border-radius: 0;
-    padding: $spacing-lg $spacing-xl;
-    box-shadow: none;
+  // Style de la réponse : sobre, respiration élégante
+  .answer-entry {
+    padding-left: clamp(0.75rem, 2vw, 1.25rem);
+    border-left: 2px solid rgba($color-primary, 0.35);
 
     .answer-text {
       font-size: 1.02rem;
       color: $color-text;
-      line-height: 1.75;
+      line-height: 1.8;
       margin: 0;
+    }
+
+    .answer-placeholder {
+      font-size: 0.96rem;
+      color: $color-text-light;
+      font-style: italic;
+      line-height: 1.6;
+      margin: 0;
+      letter-spacing: 0.01em;
     }
   }
 
-  .qa-media-wrapper {
-    margin-top: $spacing-md;
+  .entry-media-wrapper {
+    margin-top: $spacing-sm;
     width: 100%;
   }
 
-  // --- Quote Highlight Card ---
-  .quote-highlight-card {
-    position: relative;
-    background-color: $color-background-alt;
-    border: 1px solid $color-border;
-    border-top: 3px solid $color-primary;
-    border-radius: 0;
-    padding: clamp(2rem, 5vw, 3.5rem);
-    margin-top: clamp(3rem, 6vw, 5rem);
-    box-shadow: none;
-    overflow: hidden;
-
-    .quote-decor {
-      position: absolute;
-      top: -15px;
-      right: 20px;
-      font-family: serif;
-      font-size: 8rem;
-      color: rgba($color-primary, 0.05);
-      line-height: 1;
-      pointer-events: none;
-    }
+  // --- Citation éditoriale sobre ---
+  .quote-editorial-card {
+    border-top: 1px solid $color-border;
+    padding-top: clamp(2.5rem, 5vw, 4rem);
+    margin-top: clamp(2.5rem, 5vw, 4rem);
 
     .quote-title {
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       font-weight: $font-weight-semibold;
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -379,18 +431,18 @@ const interviewQuestions = [
     }
 
     .quote-body {
-      font-size: clamp(1.15rem, 2vw, 1.45rem);
+      font-size: clamp(1.15rem, 1.8vw, 1.35rem);
       font-weight: $font-weight-light;
       font-style: italic;
       color: $color-text;
-      line-height: 1.6;
-      margin-bottom: $spacing-md;
+      line-height: 1.65;
+      margin: 0 0 $spacing-sm 0;
     }
 
     .quote-author {
       display: block;
-      font-size: 0.92rem;
-      font-weight: $font-weight-semibold;
+      font-size: 0.88rem;
+      font-weight: $font-weight-medium;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: $color-text-light;

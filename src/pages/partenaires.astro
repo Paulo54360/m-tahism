@@ -3,74 +3,44 @@ import Layout from '../layouts/Layout.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import ImagePlaceholder from '../components/ImagePlaceholder.astro';
 
-const partnerSections = [
-  {
-    titleId: "Titre.3.2",
-    title: "Institutions & Soutiens Publics",
-    textId: "Texte.3.2",
-    description:
-      "Texte.3.2 — Remerciements aux ministères, directions culturelles régionales et musées nationaux qui accueillent et favorisent la mise en valeur des toiles du Métahisme à travers leurs programmes d'expositions publiques.",
-    icon: "🏛",
-    altBg: false,
-    items: [
-      { id: "Partenaire.Image.3.1", name: "Partenaire.Nom.3.1 — Ministère de la Culture & Fonds de Création", role: "Soutien Institutionnel Majeur" },
-      { id: "Partenaire.Image.3.2", name: "Partenaire.Nom.3.2 — Musée d'Art Contemporain & Métahisme", role: "Partenaire de Diffusion Muséale" },
-      { id: "Partenaire.Image.3.3", name: "Partenaire.Nom.3.3 — Biennale Internationale des Arts Visuels", role: "Co-production & Itinérance" },
-    ],
-  },
-  {
-    titleId: "Titre.3.3",
-    title: "Galeries Associées & Mécènes",
-    textId: "Texte.3.3",
-    description:
-      "Texte.3.3 — Gratitude particulière aux collectionneurs donateurs et aux galeries d'art contemporain pour la mise à disposition des œuvres maîtresses et leur soutien constant à la cote artistique de Patrick Laumond.",
-    icon: "🎨",
-    altBg: true,
-    items: [
-      { id: "Partenaire.Image.3.4", name: "Partenaire.Nom.3.4 — Galerie Horizon Contemporain (Paris - Genève)", role: "Représentation Permanente" },
-      { id: "Partenaire.Image.3.5", name: "Partenaire.Nom.3.5 — Fondation d'Entreprise pour l'Art et la Pensée", role: "Mécénat Principal d'Acquisition" },
-      { id: "Partenaire.Image.3.6", name: "Partenaire.Nom.3.6 — Cercle des Amis de Patrick Laumond", role: "Association des Collectionneurs" },
-    ],
-  },
-  {
-    titleId: "Titre.3.4",
-    title: "Ingénierie & Partenaires Technologiques",
-    textId: "Texte.3.4",
-    description:
-      "Texte.3.4 — Remerciements aux équipes techniques pour le déploiement de la solution de distribution média haute performance AWS S3, la numérisation gigapixel et l'architecture web dédiée à cette vitrine d'exposition.",
-    icon: "⚡",
-    altBg: false,
-    items: [
-      { id: "Partenaire.Image.3.7", name: "Partenaire.Nom.3.7 — Infrastructure Cloud & Stockage HD (AWS S3)", role: "Diffusion Numérique Haute Fidélité" },
-      { id: "Partenaire.Image.3.8", name: "Partenaire.Nom.3.8 — Studio GigaPixel Numérisation d'Art", role: "Captation Haute Résolution" },
-      { id: "Partenaire.Image.3.9", name: "Partenaire.Nom.3.9 — Laboratoire d'Optique & Pigments Innovants", role: "Recherche Chromatique" },
-    ],
-  },
-];
+const partner = {
+  imageId: "Partenaire.Image.3.1",
+  nameId: "Partenaire.Nom.3.1",
+  titleId: "Titre.3.2",
+  textId: "Texte.3.2",
+  name: "UNIKALO",
+  subtitle: "Fabricant Français de Peintures Bâtiment & Décoration",
+  company: "SCSO - Unikalo",
+  location: "18 avenue du Meilleur Ouvrier de France, 33700 Mérignac",
+  role: "Mécénat en nature — Fourniture exclusive de la peinture",
+  object: "Mise à disposition de la peinture nécessaire à la réalisation de l'œuvre",
+  framework: "Convention de partenariat et mécénat d'entreprise",
+  website: "https://www.unikalo.com",
+};
 ---
 
-<Layout title="Remerciements & Partenaires — Patrick Laumond" currentPath="/partenaires">
+<Layout title="Partenariat UNIKALO — Patrick Laumond" currentPath="/partenaires">
   <div class="partners-page">
-    <!-- EN-TÊTE DE LA PAGE PARTENAIRES -->
+    <!-- EN-TÊTE DE LA PAGE PARTENAIRE (STYLE ÉDITORIAL CLASSIQUE LAUMOND) -->
     <header class="partners-hero">
       <div class="main-container">
         <div class="hero-top-badge">
-          <span class="category-name">Soutiens & Mécénat Culturel</span>
+          <span class="category-name">Mécénat & Soutien Artistique</span>
         </div>
 
         <div class="tag-row">
           <span class="artist-tag">Titre.3.1</span>
         </div>
         <h1 class="partners-main-title">
-          Remerciements aux Partenaires
-          <span class="headline-sub">Les institutions, mécènes et galeries qui soutiennent l'œuvre</span>
+          Partenaire Officiel
+          <span class="headline-sub">L'engagement d'UNIKALO aux côtés de Patrick Laumond</span>
         </h1>
 
         <div class="tag-row">
           <span class="artist-tag">Texte.3.1</span>
         </div>
         <p class="partners-lead-text">
-          Texte.3.1 — La réalisation monumentale du « Grand Mikado de la pensée humaine » et le rayonnement international du mouvement Métahiste ne sauraient exister sans l'engagement indéfectible de nos partenaires. Nous tenons à exprimer notre sincère gratitude aux institutions muséales, mécènes privés et pionniers technologiques qui rendent cette exposition possible.
+          Texte.3.1 — Dans le cadre de la création monumentale de l'œuvre « Le grand Mikado de la pensée humaine », Patrick Laumond et le mouvement Métahiste s'associent à la maison UNIKALO. Nous exprimons notre sincère gratitude à leurs équipes pour leur soutien et la mise à disposition de l'ensemble de la peinture nécessaire à la concrétisation et à la réalisation de l'œuvre.
         </p>
 
         <div class="hero-media-wrapper">
@@ -80,71 +50,103 @@ const partnerSections = [
           <ImagePlaceholder
             id="Image.3.1"
             aspectRatio="21 / 9"
-            altText="Image.3.1 — Soirée inaugurale de vernissage réunissant les partenaires"
-            caption="Image.3.1 — Moment d'échange lors de la présentation privée du Grand Mikado aux partenaires fondateurs."
+            altText="Image.3.1 — Présentation du projet Le grand Mikado de la pensée humaine et collaboration Unikalo"
+            caption="Image.3.1 — Concrétisation matérielle de l'œuvre « Le grand Mikado de la pensée humaine » soutenue par Unikalo."
           />
         </div>
       </div>
     </header>
 
-    <!-- SECTIONS PARTENAIRES (INSTITUTIONNELS, GALERIES, TECHNOLOGIQUES) -->
-    {partnerSections.map((group) => (
-      <section class={`partner-group-section ${group.altBg ? 'partner-group-section--alt' : ''}`}>
-        <div class="main-container">
-          <SectionHeader tag="h2" labelId={group.titleId}>
-            {group.title}
-          </SectionHeader>
-
-          <div class="tag-row">
-            <span class="artist-tag">{group.textId}</span>
-          </div>
-          <p class="section-description">{group.description}</p>
-
-          <div class="partners-grid">
-            {group.items.map((partner) => (
-              <div class="partner-card">
-                <div class="partner-card-media">
-                  <div class="tag-row">
-                    <span class="artist-tag">{partner.id}</span>
-                  </div>
-                  <div class="partner-logo-frame">
-                    <div class="logo-symbol">{group.icon}</div>
-                    <span class="logo-placeholder-id">{partner.id}</span>
-                  </div>
-                </div>
-                <div class="partner-card-info">
-                  <h4 class="partner-name">{partner.name}</h4>
-                  <p class="partner-role">{partner.role}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    ))}
-
-    <!-- SECTION 4 : CONTACT MÉCÉNAT & COLLABORATION -->
-    <section class="partners-contact-section">
+    <!-- SECTION MÉCÉNAT & COLLABORATION (STYLE GALERIE CONTEMPORAINE) -->
+    <section class="partner-classic-section">
       <div class="main-container">
-        <div class="contact-cta-card">
-          <div class="tag-row">
-            <span class="artist-tag">Titre.3.5</span>
-          </div>
-          <h2 class="contact-card-title">Rejoindre l'Aventure Métahiste</h2>
+        <SectionHeader tag="h2" labelId={partner.titleId}>
+          Mécénat de Peinture & Réalisation Monumentale
+        </SectionHeader>
 
-          <div class="tag-row">
-            <span class="artist-tag">Texte.3.5</span>
-          </div>
-          <p class="contact-card-text">
-            Texte.3.5 — Vous êtes une institution, un conservateur ou un collectionneur passionné et souhaitez soutenir la prochaine étape d'exposition du Grand Mikado ? Contactez la délégation artistique de Patrick Laumond.
-          </p>
-
-          <div class="contact-actions">
-            <a href="https://laumond.com" target="_blank" rel="noopener noreferrer" class="btn-partner-contact">
-              Prendre Contact via laumond.com
-            </a>
-          </div>
+        <div class="tag-row">
+          <span class="artist-tag">{partner.textId}</span>
         </div>
+        <p class="section-description">
+          Texte.3.2 — Soutien exclusif apporté à la réalisation matérielle de l'œuvre « Le grand Mikado de la pensée humaine ».
+        </p>
+
+        <!-- CARTOUCHE DE PARTENARIAT ÉPURÉ -->
+        <article class="partner-document">
+          <!-- En-tête du cartel : Logo + Identité -->
+          <div class="document-header">
+            <div class="document-brand">
+              <div class="tag-row">
+                <span class="artist-tag">{partner.nameId}</span>
+              </div>
+              <h3 class="document-title">{partner.name}</h3>
+              <p class="document-subtitle">{partner.subtitle}</p>
+            </div>
+
+            <div class="document-logo-frame">
+              <div class="tag-row">
+                <span class="artist-tag">{partner.imageId}</span>
+              </div>
+              <div class="logo-white-box">
+                <img
+                  src="/images/partenaires/unikalo.png"
+                  alt="Logo officiel UNIKALO"
+                  class="partner-logo-img"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Ligne de séparation fine -->
+          <div class="document-divider"></div>
+
+          <!-- Corps du texte éditorial -->
+          <div class="document-body">
+            <div class="document-text-column">
+              <h4 class="editorial-heading">L'alliance de la matière et de la pensée</h4>
+              <p class="editorial-paragraph">
+                La maison UNIKALO accompagne Patrick Laumond dans la création de son œuvre monumentale <em>« Le grand Mikado de la pensée humaine »</em> en mettant à sa disposition l'intégralité de la peinture nécessaire à sa concrétisation.
+              </p>
+              <p class="editorial-paragraph">
+                Ce mécénat en nature concrétise une alliance d'excellence entre savoir-faire industriel français et vision artistique métahiste. Il permet à l'artiste de déployer ses recherches de tensions spatiales et de résonances chromatiques avec des matières professionnelles de haute tenue technique.
+              </p>
+            </div>
+
+            <!-- Cartel technique d'exposition (Notice de mécénat) -->
+            <aside class="document-cartel">
+              <h5 class="cartel-heading">Notice de Partenariat</h5>
+              <dl class="cartel-list">
+                <div class="cartel-row">
+                  <dt class="cartel-term">Partenaire</dt>
+                  <dd class="cartel-desc">{partner.company}</dd>
+                </div>
+                <div class="cartel-row">
+                  <dt class="cartel-term">Implantation</dt>
+                  <dd class="cartel-desc">{partner.location}</dd>
+                </div>
+                <div class="cartel-row">
+                  <dt class="cartel-term">Nature du soutien</dt>
+                  <dd class="cartel-desc">{partner.role}</dd>
+                </div>
+                <div class="cartel-row">
+                  <dt class="cartel-term">Cadre</dt>
+                  <dd class="cartel-desc">{partner.framework}</dd>
+                </div>
+              </dl>
+
+              <div class="cartel-action">
+                <a
+                  href={partner.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="link-partner-external"
+                >
+                  Consulter unikalo.com ↗
+                </a>
+              </div>
+            </aside>
+          </div>
+        </article>
       </div>
     </section>
   </div>
@@ -158,7 +160,7 @@ const partnerSections = [
     background-color: $color-background;
   }
 
-  // --- Hero Section ---
+  // --- En-tête de la page ---
   .partners-hero {
     padding-top: clamp(2.5rem, 6vw, 4.5rem);
     padding-bottom: clamp(3rem, 6vw, 5rem);
@@ -198,11 +200,12 @@ const partnerSections = [
   }
 
   .partners-lead-text {
-    font-size: clamp(1rem, 1.5vw, 1.12rem);
-    line-height: 1.75;
+    font-size: clamp(1rem, 1.4vw, 1.1rem);
+    line-height: 1.8;
     color: $color-text;
-    max-width: 950px;
-    margin-bottom: $spacing-2xl;
+    max-width: 900px;
+    margin-bottom: $spacing-xl;
+    font-weight: $font-weight-regular;
   }
 
   .hero-media-wrapper {
@@ -210,14 +213,10 @@ const partnerSections = [
     margin-top: $spacing-xl;
   }
 
-  // --- Group Sections ---
-  .partner-group-section {
+  // --- Section Partenaire (Style Classique Laumond) ---
+  .partner-classic-section {
     @include section-padding;
     background-color: $color-background;
-
-    &--alt {
-      background-color: $color-background-alt;
-    }
   }
 
   .section-description {
@@ -228,120 +227,187 @@ const partnerSections = [
     margin-bottom: clamp(2rem, 4vw, 3.5rem);
   }
 
-  .partners-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: clamp(1.5rem, 3vw, 2.5rem);
-  }
-
-  .partner-card {
+  // --- Document de Partenariat (Cartel de Galerie) ---
+  .partner-document {
     background-color: $color-white;
     border: 1px solid $color-border;
     border-radius: 0;
-    padding: $spacing-xl;
+    padding: clamp(2rem, 4vw, 3.5rem);
     box-shadow: none;
+  }
+
+  .document-header {
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
-    transition: border-color $transition-fast;
+    align-items: flex-start;
+    gap: $spacing-xl;
+    flex-wrap: wrap;
 
-    &:hover {
-      transform: none;
-      box-shadow: none;
-      border-color: $color-primary;
+    .document-brand {
+      flex: 1;
+      min-width: 260px;
+    }
 
-      .logo-symbol {
-        transform: scale(1.05);
+    .document-title {
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: $font-weight-light;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: $color-text;
+      margin: $spacing-xs 0 0.35rem 0;
+      line-height: 1.15;
+    }
+
+    .document-subtitle {
+      font-size: 0.98rem;
+      color: $color-text-light;
+      margin: 0;
+      letter-spacing: 0.02em;
+    }
+
+    .document-logo-frame {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: $spacing-xs;
+
+      @media (max-width: 600px) {
+        align-items: flex-start;
+        width: 100%;
+      }
+
+      .logo-white-box {
+        border: 1px solid $color-border-light;
+        border-radius: 0;
+        padding: 0.85rem 1.6rem;
+        background-color: $color-white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .partner-logo-img {
+          height: 38px;
+          width: auto;
+          max-width: 160px;
+          object-fit: contain;
+        }
       }
     }
   }
 
-  .partner-card-media {
-    margin-bottom: $spacing-lg;
+  .document-divider {
+    height: 1px;
+    background-color: $color-border-light;
+    margin: clamp(1.5rem, 3vw, 2.5rem) 0;
   }
 
-  .partner-logo-frame {
-    height: 110px;
-    background-color: $color-surface;
-    border: 1px solid $color-border;
-    border-radius: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.35rem;
+  // Corps du document
+  .document-body {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: clamp(2rem, 4vw, 3.5rem);
 
-    .logo-symbol {
-      font-size: 2rem;
-      transition: transform $transition-fast;
-    }
-
-    .logo-placeholder-id {
-      font-family: monospace;
-      font-size: 0.72rem;
-      color: $color-muted;
+    @media (max-width: 860px) {
+      grid-template-columns: 1fr;
     }
   }
 
-  .partner-card-info {
-    .partner-name {
-      font-size: 1rem;
+  .document-text-column {
+    .editorial-heading {
+      font-size: 1.15rem;
       font-weight: $font-weight-medium;
       color: $color-text;
-      line-height: 1.35;
-      margin-bottom: $spacing-xs;
+      letter-spacing: 0.02em;
+      margin: 0 0 $spacing-md 0;
     }
 
-    .partner-role {
-      font-size: 0.82rem;
-      color: $color-primary;
-      font-weight: $font-weight-medium;
-      letter-spacing: 0.04em;
-      margin: 0;
+    .editorial-paragraph {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: $color-text;
+      margin: 0 0 $spacing-md 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
     }
   }
 
-  // --- Contact Card ---
-  .partners-contact-section {
-    @include section-padding;
-    background-color: $color-background-alt;
-    border-top: 1px solid $color-border;
-  }
-
-  .contact-cta-card {
-    background-color: $color-white;
-    border: 1px solid $color-border;
-    border-top: 3px solid $color-primary;
-    border-radius: 0;
-    padding: clamp(2.5rem, 5vw, 4rem);
-    text-align: center;
+  // Cartel technique (style cartel d'exposition sobre)
+  .document-cartel {
+    border-left: 1px solid $color-border-light;
+    padding-left: clamp(1.5rem, 3vw, 2.5rem);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    box-shadow: none;
+    justify-content: space-between;
 
-    .contact-card-title {
-      font-size: clamp(1.6rem, 3vw, 2.3rem);
-      font-weight: $font-weight-light;
+    @media (max-width: 860px) {
+      border-left: none;
+      border-top: 1px solid $color-border-light;
+      padding-left: 0;
+      padding-top: $spacing-lg;
+    }
+
+    .cartel-heading {
+      font-size: 0.78rem;
+      font-weight: $font-weight-semibold;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: $color-primary;
+      margin: 0 0 $spacing-md 0;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid $color-border-light;
+    }
+
+    .cartel-list {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-md;
+      margin: 0 0 $spacing-xl 0;
+    }
+
+    .cartel-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .cartel-term {
+      font-size: 0.72rem;
+      font-weight: $font-weight-semibold;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: $color-text;
-      margin-bottom: $spacing-md;
+      color: $color-muted-dark;
     }
 
-    .contact-card-text {
-      font-size: 1.05rem;
-      line-height: 1.7;
+    .cartel-desc {
+      font-size: 0.88rem;
       color: $color-text;
-      max-width: 750px;
-      margin-bottom: $spacing-xl;
-      text-align: center;
+      line-height: 1.45;
+      margin: 0;
     }
 
-    .btn-partner-contact {
-      @include gallery-button-primary;
-      padding: 0.85rem 2.2rem;
-      font-size: 0.85rem;
+    .cartel-action {
+      margin-top: auto;
+      padding-top: $spacing-md;
+    }
+
+    .link-partner-external {
+      display: inline-block;
+      font-size: 0.82rem;
+      font-weight: $font-weight-medium;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: $color-primary;
+      text-decoration: none;
+      border-bottom: 1px solid $color-primary;
+      padding-bottom: 2px;
+      transition: color $transition-fast, border-color $transition-fast;
+
+      &:hover {
+        color: $color-primary-dark;
+        border-color: $color-primary-dark;
+      }
     }
   }
 </style>
